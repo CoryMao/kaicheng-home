@@ -29,7 +29,7 @@ export const dictionaries = {
     home: {
       eyebrow: "Academic homepage / personal archive",
       intro:
-        "A bilingual space for research, writing, projects, and the parts of life that make the work worth doing.",
+        "Kaicheng's bilingual space for learning, research projects, and life notes.",
       researchCta: "Explore research",
       blogCta: "Read the blog",
       lifeCta: "Browse life notes",
@@ -37,8 +37,8 @@ export const dictionaries = {
     research: {
       title: "Research",
       description:
-        "Research directions, selected projects, publications, and academic activities in one maintained profile.",
-      areas: "Research areas",
+        "With the help of my friends and Codex, Claude Code, and others",
+      areas: "Generative AI, LLM post-training, multi-source data processing",
       projects: "Selected projects",
       publications: "Publications and outputs",
       activities: "Talks and activities",
@@ -58,7 +58,7 @@ export const dictionaries = {
     cv: {
       title: "CV",
       description:
-        "A concise web version of the academic profile, with the formal PDF available for download.",
+        "The web CV is for quick browsing, with a downloadable PDF of the full resume available.",
       education: "Education",
       experience: "Experience",
       honors: "Honors and awards",
@@ -97,14 +97,14 @@ export const dictionaries = {
     home: {
       eyebrow: "学术主页 / 个人档案",
       intro:
-        "一个双语空间，用来沉淀研究、写作、项目，以及让工作保持真实感的生活片段。",
+        "恺诚的双语空间，记录学习、研究项目和生活点滴。",
       researchCta: "查看研究",
       blogCta: "阅读博客",
       lifeCta: "浏览生活札记",
     },
     research: {
       title: "研究",
-      description: "集中展示研究方向、代表项目、论文产出与学术活动。",
+      description: "在朋友们和 Codex、Claude Code 的帮助下",
       areas: "研究方向",
       projects: "代表项目",
       publications: "论文与产出",
@@ -122,7 +122,7 @@ export const dictionaries = {
     },
     cv: {
       title: "CV",
-      description: "网页简版用于快速浏览，正式版本可下载 PDF。",
+      description: "网页CV用于快速浏览，亦可下载完整简历的PDF。",
       education: "教育经历",
       experience: "经历",
       honors: "荣誉奖项",

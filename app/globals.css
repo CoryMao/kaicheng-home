@@ -29,15 +29,15 @@
 }
 
 .dark {
-  --background: #12110f;
-  --foreground: #f4f1ea;
-  --muted: #b6aa9d;
-  --surface: #1a1815;
-  --surface-alt: #24211d;
-  --border: #3a342c;
-  --accent: #5eead4;
+  --background: #17130f;
+  --foreground: #f6efe7;
+  --muted: #c4b3a3;
+  --surface: #211a15;
+  --surface-alt: #2b231c;
+  --border: #45372c;
+  --accent: #d97706;
   --accent-strong: #fda4af;
-  --accent-warm: #facc15;
+  --accent-warm: #fbbf24;
 }
 
 body {

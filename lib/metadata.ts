@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 
+import { profiles } from "@/content/profile";
 import type { Locale } from "@/lib/i18n";
 import { siteConfig } from "@/lib/site";
 
@@ -40,7 +41,7 @@ export function createPageMetadata({
       title,
       description,
       url: canonical,
-      siteName: siteConfig.name,
+      siteName: profiles[locale].name,
       locale: locale === "zh" ? "zh_CN" : "en_US",
       type: "website",
       images: [

@@ -59,7 +59,7 @@ export async function generateMetadata({
       title: profile.name,
       description: profile.shortBio,
       url: `/${locale}`,
-      siteName: siteConfig.name,
+      siteName: profile.name,
       images: [
         {
           url: siteConfig.ogImage,

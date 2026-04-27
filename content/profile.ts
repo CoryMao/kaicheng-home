@@ -14,6 +14,10 @@ export type Profile = {
   shortBio: string;
   longBio: string;
   portrait: string;
+  portraits: {
+    src: string;
+    alt: string;
+  }[];
   email: string;
   links: LinkItem[];
   education: {
@@ -43,18 +47,40 @@ export type Profile = {
 export const profiles: Record<Locale, Profile> = {
   en: {
     name: "Kaicheng Mao",
-    headline: "Data Science undergraduate at SUSTech · AI research",
-    status: "B.S. Data Science student at Southern University of Science and Technology",
+    headline: "Kaicheng's Personal Homepage",
+    status: "B.S. Data Science student @ Southern University of Science and Technology",
     location: "Shenzhen, China",
     shortBio:
-      "I am a Data Science undergraduate interested in deep learning, LLM post-training, and multi-source data processing.",
+      "I am a Data Science undergraduate interested in deep learning, generative models, LLM post-training, and multi-source data processing.",
     longBio:
       "I am a Data Science undergraduate at Southern University of Science and Technology. My project experience spans precipitation nowcasting, Qwen3-0.6B-Base fine-tuning, and interactive image segmentation, with hands-on work in data cleaning, model experimentation, geospatial preprocessing, and algorithm implementation. Outside research and engineering, I am active in varsity volleyball and student leadership.",
-    portrait: "/media/profile-portrait.svg",
+    portrait: "/media/profile/image.png",
+    portraits: [
+      {
+        src: "/media/profile/image.png",
+        alt: "Kaicheng Mao portrait",
+      },
+      {
+        src: "/media/profile/profile-2.jpg",
+        alt: "Kaicheng Mao portrait alternate 1",
+      },
+      {
+        src: "/media/profile/profile-3.jpg",
+        alt: "Kaicheng Mao portrait alternate 2",
+      },
+      {
+        src: "/media/profile/profile-4.jpg",
+        alt: "Kaicheng Mao portrait alternate 3",
+      },
+    ],
     email: siteConfig.email,
     links: [
       { label: "GitHub", href: "https://github.com/CoryMao" },
       { label: "Google Scholar", href: "#" },
+      {
+        label: "Instagram",
+        href: "https://www.instagram.com/kaicheng_mao?igsh=M3Z1ZDc2d3V0bXdq&utm_source=qr",
+      },
       {
         label: "LinkedIn",
         href: "https://www.linkedin.com/in/%E6%81%BA%E8%AF%9A-%E6%AF%9B-482936317/",
@@ -180,19 +206,44 @@ export const profiles: Record<Locale, Profile> = {
   },
   zh: {
     name: "毛恺诚",
-    headline: "南方科技大学数据科学本科生 · AI Research",
-    status: "南方科技大学数据科学本科生",
+    headline: "毛恺诚的个人主页",
+    status: "数据科学 本科生@南方科技大学",
     location: "广东深圳",
     shortBio:
-      "我是一名数据科学本科生，关注深度学习、LLM 后训练与多源数据处理。",
+      "我是一名数据科学本科生，关注深度学习、生成式模型、LLM 后训练与多源数据处理。",
     longBio:
-      "我目前就读于南方科技大学数据科学专业。项目经历覆盖 precipitation nowcasting、Qwen3-0.6B-Base 微调和交互式图像分割，具备数据清洗、模型实验、地理空间预处理与算法实现经验。同时长期参与校队训练与社团管理，具备团队协作和组织领导经验。",
-    portrait: "/media/profile-portrait.svg",
+      "我目前就读于南方科技大学数据科学专业。项目经历有: precipitation nowcasting、Qwen3-0.6B-Base 微调和交互式图像分割，具备数据清洗、模型实验、地理空间预处理与算法实现经验。同时长期参与校队训练与社团管理，具备团队协作和组织领导经验。",
+    portrait: "/media/profile/image.png",
+    portraits: [
+      {
+        src: "/media/profile/image.png",
+        alt: "毛恺诚头像",
+      },
+      {
+        src: "/media/profile/profile-2.jpg",
+        alt: "毛恺诚头像备选 1",
+      },
+      {
+        src: "/media/profile/profile-3.jpg",
+        alt: "毛恺诚头像备选 2",
+      },
+      {
+        src: "/media/profile/profile-4.jpg",
+        alt: "毛恺诚头像备选 3",
+      },
+    ],
     email: siteConfig.email,
     links: [
       { label: "GitHub", href: "https://github.com/CoryMao" },
       { label: "Google Scholar", href: "#" },
-      { label: "LinkedIn", href: "https://www.linkedin.com/in/%E6%81%BA%E8%AF%9A-%E6%AF%9B-482936317/" },
+      {
+        label: "Instagram",
+        href: "https://www.instagram.com/kaicheng_mao?igsh=M3Z1ZDc2d3V0bXdq&utm_source=qr",
+      },
+      {
+        label: "LinkedIn",
+        href: "https://www.linkedin.com/in/%E6%81%BA%E8%AF%9A-%E6%AF%9B-482936317/",
+      },
     ],
     education: [
       {

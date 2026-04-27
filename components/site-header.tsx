@@ -3,8 +3,8 @@ import Link from "next/link";
 import { LanguageSwitcher } from "@/components/language-switcher";
 import { MobileNav, type NavItem } from "@/components/mobile-nav";
 import { ThemeToggle } from "@/components/theme-toggle";
+import { profiles } from "@/content/profile";
 import type { Locale } from "@/lib/i18n";
-import { siteConfig } from "@/lib/site";
 
 type NavigationLabels = {
   home: string;
@@ -34,6 +34,7 @@ export function SiteHeader({
   labels: NavigationLabels;
 }) {
   const navItems = getNavItems(locale, labels);
+  const profile = profiles[locale];
 
   return (
     <header className="sticky top-0 z-40 border-b border-border/80 bg-background/90 backdrop-blur">
@@ -42,7 +43,7 @@ export function SiteHeader({
           href={`/${locale}`}
           className="text-sm font-semibold tracking-[0.18em] text-foreground"
         >
-          {siteConfig.name}
+          {profile.name}
         </Link>
 
         <nav

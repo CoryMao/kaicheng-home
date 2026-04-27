@@ -1,10 +1,11 @@
 import type { Metadata } from "next";
-import Image from "next/image";
 import Link from "next/link";
 import { ArrowRight, FileText, Mail, MapPin } from "lucide-react";
 
 import { ArticleCard } from "@/components/article-card";
+import { ProfilePhotoGallery } from "@/components/profile-photo-gallery";
 import { SectionHeading } from "@/components/section-heading";
+import { SocialLinks } from "@/components/social-links";
 import { profiles } from "@/content/profile";
 import { researchProfiles } from "@/content/research";
 import { getArticles } from "@/lib/content";
@@ -89,19 +90,11 @@ export default async function HomePage({ params }: PageProps) {
               CV
             </a>
           </div>
+          <SocialLinks links={profile.links} className="mt-5" />
         </div>
 
         <div className="relative">
-          <div className="relative aspect-[4/5] overflow-hidden rounded-lg border border-border bg-surface-alt">
-            <Image
-              src={profile.portrait}
-              alt=""
-              fill
-              priority
-              sizes="(max-width: 1024px) 100vw, 420px"
-              className="object-cover"
-            />
-          </div>
+          <ProfilePhotoGallery photos={profile.portraits} name={profile.name} />
           <div className="mt-4 rounded-lg border border-border bg-surface p-4">
             <p className="text-sm font-semibold text-foreground">
               {profile.status}

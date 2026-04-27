@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Download, ExternalLink, Mail } from "lucide-react";
 
 import { SectionHeading } from "@/components/section-heading";
+import { SocialLinks } from "@/components/social-links";
 import { profiles } from "@/content/profile";
 import { getDictionary } from "@/lib/dictionaries";
 import { requireLocale } from "@/lib/locale";
@@ -167,19 +168,7 @@ export default async function CvPage({ params }: PageProps) {
           <h2 className="mt-8 text-xl font-semibold tracking-tight text-foreground">
             {dictionary.common.links}
           </h2>
-          <div className="mt-4 grid gap-3 text-sm">
-            {profile.links.map((link) => (
-              <a
-                key={link.label}
-                href={link.href}
-                target={link.href.startsWith("http") ? "_blank" : undefined}
-                rel={link.href.startsWith("http") ? "noreferrer" : undefined}
-                className="font-semibold text-accent transition hover:text-foreground"
-              >
-                {link.label}
-              </a>
-            ))}
-          </div>
+          <SocialLinks links={profile.links} className="mt-4" showLabels />
         </aside>
       </div>
     </div>
