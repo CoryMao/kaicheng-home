@@ -3,15 +3,9 @@ import "server-only";
 import type { ComponentType } from "react";
 import type { MDXProps } from "mdx/types";
 
-import BlogFieldNotesEn, {
-  metadata as blogFieldNotesEnMetadata,
-} from "@/content/blog/en/field-notes.mdx";
-import BlogResearchNotesEn, {
-  metadata as blogResearchNotesEnMetadata,
-} from "@/content/blog/en/research-notes.mdx";
-import BlogResearchNotesZh, {
-  metadata as blogResearchNotesZhMetadata,
-} from "@/content/blog/zh/research-notes.mdx";
+import BlogProjectSurvivalAnalysisEn, {
+  metadata as blogProjectSurvivalAnalysisEnMetadata,
+} from "@/content/blog/en/project-1-survival-analysis.mdx";
 import LifeDeskLightEn, {
   metadata as lifeDeskLightEnMetadata,
 } from "@/content/life/en/desk-light.mdx";
@@ -36,18 +30,10 @@ const records: ArticleRecord[] = [
   article(
     "blog",
     "en",
-    "research-notes",
-    blogResearchNotesEnMetadata,
-    BlogResearchNotesEn,
+    "project-1-survival-analysis",
+    blogProjectSurvivalAnalysisEnMetadata,
+    BlogProjectSurvivalAnalysisEn,
   ),
-  article(
-    "blog",
-    "zh",
-    "research-notes",
-    blogResearchNotesZhMetadata,
-    BlogResearchNotesZh,
-  ),
-  article("blog", "en", "field-notes", blogFieldNotesEnMetadata, BlogFieldNotesEn),
   article(
     "life",
     "en",

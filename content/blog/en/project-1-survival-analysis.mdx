@@ -1,0 +1,112 @@
+export const metadata = {
+  title: "Project 1 Q2: Survival Analysis for Telco Customer Churn",
+  date: "2026-04-28",
+  summary:
+    "A survival-analysis report for IBM Telco Customer Churn data, including Kaplan-Meier, log-rank tests, Cox PH, AFT, and CLV.",
+  tags: [
+    "survival analysis",
+    "spark",
+    "mysql",
+    "customer churn",
+    "project 1",
+  ],
+  readingTime: "6 min read",
+  published: true,
+}
+
+This post summarizes the survival-analysis part of Project 1. The goal is to analyze how long month-to-month internet customers remain active before churn, and to connect survival probabilities with customer lifetime value.
+
+## Dataset and Survival Setup
+
+The analysis uses the IBM Telco Customer Churn dataset. Each row represents one customer. I used `tenure` as the duration variable and `Churn` as the event indicator.
+
+| Concept | Variable | Meaning |
+| --- | --- | --- |
+| Duration | `tenure` | Customer lifetime in months |
+| Event | `Churn = Yes` | Churn happened |
+| Censoring | `Churn = No` | Customer has not churned yet |
+| Population | `Contract = Month-to-month` and `InternetService != No` | Selected survival-analysis cohort |
+
+After filtering, the survival-analysis cohort contains 3351 customers. Among them, 1556 customers churned, giving a churn rate of 46.43%. The average tenure is 19.43 months.
+
+## Kaplan-Meier Survival Curve
+
+The Kaplan-Meier estimator measures the probability that a customer survives beyond each month. It handles censored customers correctly, so active customers are not treated as churned.
+
+| Month | Survival probability |
+| ---: | ---: |
+| 6 | 0.7803 |
+| 12 | 0.6950 |
+| 24 | 0.5753 |
+| 36 | 0.4800 |
+| 48 | 0.3872 |
+| 60 | 0.2890 |
+
+The median survival time is 34 months. This means that the estimated probability of a selected customer remaining active reaches about 50% around month 34.
+
+## Log-Rank Tests
+
+I used log-rank tests to compare survival curves across customer attributes.
+
+| Feature | Minimum p-value | Interpretation |
+| --- | ---: | --- |
+| gender | 0.153317 | Not significant |
+| seniorCitizen | 0.723174 | Not significant |
+| partner | 2.25e-31 | Significant |
+| dependents | 3.24e-09 | Significant |
+| onlineSecurity | 1.19e-32 | Significant |
+| onlineBackup | 4.12e-43 | Significant |
+| techSupport | 1.92e-21 | Significant |
+| paymentMethod | 1.30e-21 | Significant |
+
+The strongest differences appear in service and support variables such as online backup, online security, and tech support. These variables are more informative than gender or senior-citizen status for this survival task.
+
+## Cox Proportional Hazards Model
+
+The Cox model estimates how each covariate changes churn hazard. Selected model results are:
+
+| Covariate | Coefficient | Hazard ratio | p-value |
+| --- | ---: | ---: | ---: |
+| dependents_Yes | -0.3287 | 0.7199 | < 0.001 |
+| internetService_DSL | -0.2173 | 0.8047 | 0.0002 |
+| onlineBackup_Yes | -0.7766 | 0.4600 | < 0.001 |
+| techSupport_Yes | -0.6392 | 0.5277 | < 0.001 |
+
+The Cox concordance index is 0.6409. Online backup and tech support are associated with lower churn hazard. The proportional-hazards assumption check shows violations for several variables, so the Cox model should be interpreted carefully.
+
+## Accelerated Failure Time Model
+
+I also fitted a log-logistic Accelerated Failure Time model. The AFT model achieved:
+
+| Metric | Value |
+| --- | ---: |
+| Concordance index | 0.7306 |
+| AIC | 13698.72 |
+| Log-likelihood | -6838.36 |
+
+Selected AFT coefficients:
+
+| Covariate | Coefficient | exp(coef) | p-value |
+| --- | ---: | ---: | ---: |
+| onlineBackup_Yes | 0.8128 | 2.2542 | < 0.001 |
+| onlineSecurity_Yes | 0.8616 | 2.3669 | < 0.001 |
+| techSupport_Yes | 0.6893 | 1.9923 | < 0.001 |
+| partner_Yes | 0.6768 | 1.9675 | < 0.001 |
+| internetService_DSL | 0.3837 | 1.4678 | < 0.001 |
+
+Positive AFT coefficients indicate longer expected time before churn. The AFT model had a higher concordance index than the Cox model in this analysis.
+
+## Customer Lifetime Value
+
+Finally, I used survival probabilities to estimate customer lifetime value over a 72-month horizon.
+
+| Profile | 72-month CLV |
+| --- | ---: |
+| Baseline profile | 895.03 |
+| Protected profile | 2051.50 |
+
+This step connects survival modeling with business value. The protected profile, which has stronger retention-related service features, has a much higher estimated CLV.
+
+## Conclusion
+
+Survival analysis is useful for churn because it models not only whether customers churn, but when they are likely to churn. In this Telco dataset, support and service variables such as online backup, online security, and tech support are strongly related to longer customer survival. Kaplan-Meier curves provide interpretable survival probabilities, log-rank tests identify important group differences, Cox and AFT models quantify feature effects, and CLV converts survival probabilities into a business metric.
