@@ -1,0 +1,12 @@
+<svg width="1200" height="675" viewBox="0 0 1200 675" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="title desc">
+  <title id="title">Weekend walk cover</title>
+  <desc id="desc">Abstract city walk with blocks, paths, and warm light.</desc>
+  <rect width="1200" height="675" fill="#F7F2EA"/>
+  <circle cx="1005" cy="142" r="70" fill="#A16207" fill-opacity=".28"/>
+  <rect x="125" y="235" width="150" height="292" rx="8" fill="#0F766E" fill-opacity=".22"/>
+  <rect x="326" y="174" width="184" height="353" rx="8" fill="#9F1239" fill-opacity=".16"/>
+  <rect x="570" y="270" width="128" height="257" rx="8" fill="#181513" fill-opacity=".16"/>
+  <rect x="758" y="208" width="214" height="319" rx="8" fill="#0F766E" fill-opacity=".18"/>
+  <path d="M0 534C179 480 349 467 510 495C738 535 916 545 1200 461V675H0V534Z" fill="#181513"/>
+  <path d="M197 612C310 556 430 534 557 546C710 560 857 612 1003 594" stroke="#F4F1EA" stroke-width="10" stroke-linecap="round"/>
+</svg>

@@ -1,0 +1,12 @@
+<svg width="1200" height="675" viewBox="0 0 1200 675" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="title desc">
+  <title id="title">Desk light cover</title>
+  <desc id="desc">Abstract desk, notebook, and reading lamp.</desc>
+  <rect width="1200" height="675" fill="#12110F"/>
+  <path d="M0 503H1200V675H0V503Z" fill="#24211D"/>
+  <rect x="205" y="245" width="390" height="258" rx="8" fill="#F4F1EA"/>
+  <path d="M260 320H532M260 374H506M260 428H555" stroke="#6D6259" stroke-width="12" stroke-linecap="round"/>
+  <path d="M718 503L825 163" stroke="#DED7CD" stroke-width="18" stroke-linecap="round"/>
+  <path d="M789 176L992 248L912 305L735 242L789 176Z" fill="#A16207"/>
+  <circle cx="895" cy="353" r="156" fill="#FACC15" fill-opacity=".16"/>
+  <path d="M671 503H894" stroke="#DED7CD" stroke-width="18" stroke-linecap="round"/>
+</svg>

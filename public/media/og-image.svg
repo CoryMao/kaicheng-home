@@ -1,0 +1,12 @@
+<svg width="1200" height="630" viewBox="0 0 1200 630" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="title desc">
+  <title id="title">Kaicheng Mao academic homepage</title>
+  <desc id="desc">Open Graph image for a bilingual academic personal homepage.</desc>
+  <rect width="1200" height="630" fill="#FBFAF7"/>
+  <path d="M0 0H1200V182C985 153 803 155 654 188C429 238 268 353 0 326V0Z" fill="#0F766E" fill-opacity=".18"/>
+  <path d="M1200 630H0V475C177 416 342 399 496 424C731 462 914 577 1200 521V630Z" fill="#9F1239" fill-opacity=".14"/>
+  <text x="96" y="260" font-family="Arial, Helvetica, sans-serif" font-size="74" font-weight="700" fill="#181513">Kaicheng Mao</text>
+  <text x="100" y="332" font-family="Arial, Helvetica, sans-serif" font-size="30" fill="#6D6259">Research / Writing / Life</text>
+  <rect x="98" y="392" width="208" height="12" rx="6" fill="#0F766E"/>
+  <rect x="326" y="392" width="128" height="12" rx="6" fill="#A16207"/>
+  <rect x="474" y="392" width="168" height="12" rx="6" fill="#9F1239"/>
+</svg>

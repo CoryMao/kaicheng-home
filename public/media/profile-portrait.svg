@@ -1,0 +1,11 @@
+<svg width="900" height="1125" viewBox="0 0 900 1125" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="title desc">
+  <title id="title">Profile portrait placeholder</title>
+  <desc id="desc">A calm abstract profile placeholder for the academic homepage.</desc>
+  <rect width="900" height="1125" fill="#F1EDE6"/>
+  <path d="M0 0H900V391C764 331 620 305 468 312C286 320 130 383 0 500V0Z" fill="#0F766E" fill-opacity=".18"/>
+  <path d="M900 1125H0V757C127 819 270 849 428 846C614 842 771 777 900 653V1125Z" fill="#9F1239" fill-opacity=".14"/>
+  <circle cx="450" cy="414" r="136" fill="#181513"/>
+  <path d="M221 928C240 791 335 688 450 688C565 688 660 791 679 928H221Z" fill="#181513"/>
+  <path d="M246 940H654" stroke="#A16207" stroke-width="12" stroke-linecap="round"/>
+  <text x="450" y="1048" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="42" font-weight="700" fill="#181513" letter-spacing="10">KM</text>
+</svg>
