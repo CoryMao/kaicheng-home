@@ -11,6 +11,7 @@ type NavigationLabels = {
   research: string;
   blog: string;
   life: string;
+  cv: string;
   menu: string;
   close: string;
 };
@@ -21,6 +22,7 @@ function getNavItems(locale: Locale, labels: NavigationLabels): NavItem[] {
     { href: `/${locale}/research`, label: labels.research },
     { href: `/${locale}/blog`, label: labels.blog },
     { href: `/${locale}/life`, label: labels.life },
+    { href: `/${locale}/cv`, label: labels.cv },
   ];
 }
 

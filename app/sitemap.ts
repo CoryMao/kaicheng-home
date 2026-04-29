@@ -7,7 +7,7 @@ import { absoluteUrl } from "@/lib/utils";
 
 export default function sitemap(): MetadataRoute.Sitemap {
   const staticRoutes = locales.flatMap((locale) =>
-    ["", "/research", "/blog", "/life"].map((path) => ({
+    ["", "/research", "/blog", "/life", "/cv"].map((path) => ({
       url: absoluteUrl(siteConfig.url, `/${locale}${path}`),
       lastModified: new Date(),
       changeFrequency: "monthly" as const,
