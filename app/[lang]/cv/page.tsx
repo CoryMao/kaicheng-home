@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
+import { cookies } from "next/headers";
 import { Download, ExternalLink, Mail } from "lucide-react";
 
+import { CvGate } from "@/components/cv-gate";
 import { SectionHeading } from "@/components/section-heading";
 import { SocialLinks } from "@/components/social-links";
 import { profiles } from "@/content/profile";
@@ -31,6 +33,14 @@ export async function generateMetadata({
 export default async function CvPage({ params }: PageProps) {
   const { lang: rawLang } = await params;
   const locale = requireLocale(rawLang);
+
+  const cookieStore = await cookies();
+  const verified = cookieStore.get("cv-verified")?.value === "1";
+
+  if (!verified) {
+    return <CvGate />;
+  }
+
   const dictionary = getDictionary(locale);
   const profile = profiles[locale];
   const cvPath = getCvPath(locale);
