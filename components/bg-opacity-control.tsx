@@ -7,9 +7,9 @@ const STORAGE_KEY = "bg-opacity";
 export function BgOpacityControl() {
   const [open, setOpen] = useState(false);
   const [value, setValue] = useState(() => {
-    if (typeof window === "undefined") return 7;
+    if (typeof window === "undefined") return 20;
     const saved = localStorage.getItem(STORAGE_KEY);
-    return saved ? Number(saved) : 7;
+    return saved ? Number(saved) : 20;
   });
   const rootRef = useRef<HTMLElement | null>(null);
 
@@ -29,7 +29,7 @@ export function BgOpacityControl() {
           <input
             type="range"
             min="0"
-            max="30"
+            max="50"
             value={value}
             onChange={(e) => setValue(Number(e.target.value))}
             className="h-1 w-24 cursor-pointer accent-accent"

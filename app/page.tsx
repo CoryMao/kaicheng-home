@@ -59,18 +59,7 @@ export default function GatePage() {
 
   return (
     <div className="fixed inset-0 overflow-hidden bg-background">
-      {/* Blurred homepage background */}
-      <div className="absolute inset-0">
-        <iframe
-          src="/en"
-          title=""
-          className="h-full w-full scale-110 blur-xl opacity-20"
-          style={{ border: "none", pointerEvents: "none" }}
-        />
-      </div>
-      <div className="absolute inset-0 bg-background/50" />
-
-      {/* Gate overlay — centered in viewport */}
+      {/* Gate — centered in viewport */}
       <div className="absolute inset-0 flex items-center justify-center">
         {showPassword ? (
           <div className="mx-4 w-full max-w-sm">

@@ -6,8 +6,8 @@
   --background: #fbfaf7;
   --foreground: #181513;
   --muted: #6d6259;
-  --surface: #fffefd;
-  --surface-alt: #f1ede6;
+  --surface: #fffefdea;
+  --surface-alt: #f1ede6e0;
   --border: #ded7cd;
   --accent: #0f766e;
   --accent-strong: #9f1239;
@@ -32,8 +32,8 @@
   --background: #17130f;
   --foreground: #f6efe7;
   --muted: #c4b3a3;
-  --surface: #211a15;
-  --surface-alt: #2b231c;
+  --surface: #211a15ea;
+  --surface-alt: #2b231ce0;
   --border: #45372c;
   --accent: #d97706;
   --accent-strong: #fda4af;
@@ -48,11 +48,11 @@ body {
 }
 
 :root {
-  --bg-opacity: 0.07;
+  --bg-opacity: 0.20;
 }
 
 .dark {
-  --bg-opacity: 0.04;
+  --bg-opacity: 0.12;
 }
 
 body::after {
