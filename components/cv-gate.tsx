@@ -5,7 +5,14 @@ import { useState } from "react";
 import { Lock } from "lucide-react";
 
 const COOKIE_NAME = "cv-verified";
+const ADMIN_COOKIE = "admin-verified";
 const COOKIE_DAYS = 30;
+
+function getCookie(name: string): string | null {
+  if (typeof document === "undefined") return null;
+  const match = document.cookie.match(new RegExp(`(?:^|; )${name}=([^;]*)`));
+  return match ? match[1] : null;
+}
 
 function setCookie(name: string, value: string, days: number) {
   const expires = new Date(Date.now() + days * 24 * 60 * 60 * 1000).toUTCString();
@@ -16,8 +23,17 @@ export function CvGate() {
   const router = useRouter();
   const [input, setInput] = useState("");
   const [error, setError] = useState(false);
+  const [alreadyVerified, setAlreadyVerified] = useState(() => {
+    if (typeof window === "undefined") return false;
+    return getCookie(COOKIE_NAME) === "1" || getCookie(ADMIN_COOKIE) === "1";
+  });
 
   const correctCode = process.env.NEXT_PUBLIC_CV_ACCESS_CODE;
+
+  if (alreadyVerified) {
+    router.refresh();
+    return null;
+  }
 
   function handleSubmit(e: React.FormEvent) {
     e.preventDefault();

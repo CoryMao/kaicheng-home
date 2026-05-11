@@ -1,5 +1,6 @@
 import Link from "next/link";
 
+import { AdminEntryButton } from "@/components/admin-entry-button";
 import { LanguageSwitcher } from "@/components/language-switcher";
 import { MobileNav, type NavItem } from "@/components/mobile-nav";
 import { ThemeToggle } from "@/components/theme-toggle";
@@ -62,6 +63,7 @@ export function SiteHeader({
         </nav>
 
         <div className="hidden items-center gap-2 md:flex">
+          <AdminEntryButton />
           <LanguageSwitcher currentLocale={locale} />
           <ThemeToggle />
         </div>

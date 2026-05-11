@@ -35,7 +35,9 @@ export default async function CvPage({ params }: PageProps) {
   const locale = requireLocale(rawLang);
 
   const cookieStore = await cookies();
-  const verified = cookieStore.get("cv-verified")?.value === "1";
+  const verified =
+    cookieStore.get("cv-verified")?.value === "1" ||
+    cookieStore.get("admin-verified")?.value === "1";
 
   if (!verified) {
     return <CvGate />;
