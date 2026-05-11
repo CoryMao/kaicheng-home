@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { ArticleListClient } from "@/components/article-list-client";
-import { getAllArticles } from "@/lib/content";
+import { getStaticArticles } from "@/lib/content";
 import { getAllDbArticles, dbArticleToSummary } from "@/lib/db";
 import type { ArticleSummary } from "@/lib/content-types";
 
@@ -15,7 +15,7 @@ export default async function AdminArticlesPage() {
     // DATABASE_URL not configured yet — skip DB
   }
 
-  const staticArticles = getAllArticles();
+  const staticArticles = getStaticArticles();
 
   const merged: ArticleRow[] = staticArticles.map((s) => ({ ...s, _source: "mdx" as const }));
   for (const db of dbSummaries) {
