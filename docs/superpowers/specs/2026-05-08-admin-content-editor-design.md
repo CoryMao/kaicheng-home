@@ -15,7 +15,7 @@
 | 编辑器风格 | Typora 模式 — 所见即所得的 Markdown 编辑 |
 | 编辑器库 | `typora-web`（ProseMirror 封装） |
 | 后台入口 | `/admin` 路由，与前台共用同一 Next.js 项目 |
-| 认证方式 | 复用 CV 访问码模式：`NEXT_PUBLIC_CV_ACCESS_CODE` + cookie |
+| 认证方式 | 独立访问码 `ADMIN_ACCESS_CODE` + `admin-verified` cookie（不与 CV 共享） |
 | 数据持久化 | 混合模式：已有 MDX 文件保持静态生成，新文章存入 Neon Postgres |
 | 数据库 | Neon Postgres（Vercel Marketplace） |
 
@@ -76,13 +76,13 @@ CREATE UNIQUE INDEX idx_articles_kind_locale_slug
 | `/admin/articles/new` | 新建文章 |
 | `/admin/articles/[id]/edit` | 编辑文章 |
 
-所有 `/admin` 路由**不经过 `[lang]`**，独立于前台的多语言路由体系。登录保护通过服务端 `cookies()` 检查 `cv-verified` cookie。
+所有 `/admin` 路由**不经过 `[lang]`**，独立于前台的多语言路由体系。登录保护通过服务端 `cookies()` 检查 `admin-verified` cookie（独立于 CV 的 `cv-verified`）。
 
 ## 组件树
 
 ```
 app/admin/layout.tsx              → AdminShell（检查 cookie，未登录重定向 /admin/login）
-  /login/page.tsx                 → CvGate（复用现有组件）
+  /login/page.tsx                 → AdminGate（独立组件，使用 ADMIN_ACCESS_CODE 和 admin-verified cookie）
   /articles/page.tsx              → ArticleList（服务端查询 DB + MDX 合并列表）
   /articles/new/page.tsx          → ArticleEditor（新建模式）
   /articles/[id]/edit/page.tsx    → ArticleEditor（编辑模式，预填数据）
@@ -126,6 +126,7 @@ components/article-list.tsx       → 文章列表（含新建、编辑、删除
 - `app/admin/articles/new/page.tsx`
 - `app/admin/articles/[id]/edit/page.tsx`
 - `components/article-editor.tsx`
+- `components/admin-gate.tsx`
 - `components/admin-shell.tsx`
 - `components/article-list.tsx`
 - `lib/db.ts`
