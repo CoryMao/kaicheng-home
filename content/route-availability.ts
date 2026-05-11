@@ -6,8 +6,8 @@ export const articleSlugAvailability: Record<
   Record<Locale, string[]>
 > = {
   blog: {
-    en: ["project-1-survival-analysis"],
-    zh: [],
+    en: ["grpo-math-reasoning", "project-1-survival-analysis"],
+    zh: ["grpo-math-reasoning"],
   },
   life: {
     en: ["weekend-walk", "desk-light"],

@@ -1,0 +1,300 @@
+export const metadata = {
+  title: "GRPO Post-Training for Math Reasoning on Qwen3-0.6B",
+  date: "2026-05-11",
+  summary:
+    "From SFT to GRPO: a systematic exploration of post-training strategies that improved math reasoning accuracy from 38.2% to 55.2% on Qwen3-0.6B-Base, with reward function design and None discrimination.",
+  tags: ["GRPO", "RL", "post-training", "math-reasoning", "Qwen"],
+  readingTime: "15 min",
+};
+
+export default function MdxComponent() {
+  return (
+    <div>
+      <h2>TL;DR</h2>
+      <p>
+        This post documents a 14-experiment journey of post-training Qwen3-0.6B-Base
+        for mathematical reasoning. Starting from SFT (supervised fine-tuning), I
+        discovered that SFT alone cannot substantially improve a small model's reasoning
+        ability. Switching to GRPO (Group Relative Policy Optimization) — the algorithm
+        behind DeepSeek-R1 — unlocked significant gains: accuracy improved from 38.2%
+        to 55.2% (+17pp). The key challenges were reward function design and teaching
+        the model to recognize unsolvable problems.
+      </p>
+
+      <hr />
+
+      <h2>Phase 1: SFT Experiments — The Bottleneck</h2>
+
+      <h3>Cold-start SFT</h3>
+      <p>
+        I began with a cold-start dataset of 8,323 math problems (with <code>&lt;think&gt;</code> reasoning
+        chains) and performed full-parameter SFT on Qwen3-0.6B-Base (4 epochs, lr = $2 \times 10^{-5}$,
+        DeepSpeed + OpenRLHF).
+      </p>
+      <p>
+        <strong>Result:</strong> 39.5% accuracy (valid_1000), barely above the 38.2% baseline.
+      </p>
+
+      <h3>Scaling SFT Data — Regression</h3>
+      <p>
+        I expanded the training set by merging in three additional high-quality datasets
+        from teammates. Counterintuitively, accuracy <em>dropped</em> to 36.7%. The new data
+        shifted the distribution in ways that hurt overall performance.
+      </p>
+
+      <p>
+        <strong>Key insight:</strong> For a small model like Qwen3-0.6B, SFT alone cannot
+        produce meaningful capability gains. However, Base model's pass@5 reached 62.6% —
+        the model <em>has</em> the knowledge, but greedy decoding cannot reliably access it.
+        This gap between greedy and pass@k is exactly what RL can close.
+      </p>
+
+      <hr />
+
+      <h2>Phase 2: GRPO Validation — RL &gt;&gt; SFT</h2>
+
+      <h3>Why GRPO?</h3>
+      <p>
+        GRPO samples $K$ completions per prompt and computes group-relative advantages,
+        directly optimizing the generation distribution. It narrows the greedy-pass@k gap
+        without needing additional labeled data — the reward signal comes from comparing
+        generated answers to ground truth.
+      </p>
+
+      <h3>Setup</h3>
+      <ul>
+        <li>Framework: verl 0.7.1</li>
+        <li>$K=10$, Temperature $=0.7$, LR $=1 \times 10^{-6}$</li>
+        <li>Single RTX 5090 32GB (Actor + vLLM rollout dual-engine)</li>
+        <li>1,772 GRPO training prompts filtered for extractable answers ($\boxed{}$)</li>
+      </ul>
+
+      <h3>Results</h3>
+      <table>
+        <thead>
+          <tr>
+            <th>Model</th>
+            <th>Training</th>
+            <th>Accuracy</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Base (Qwen3-0.6B)</td>
+            <td>None</td>
+            <td>36.2%</td>
+          </tr>
+          <tr>
+            <td>SFT Coldstart (best)</td>
+            <td>Full SFT</td>
+            <td>39.5%</td>
+          </tr>
+          <tr>
+            <td><strong>GRPO from Base</strong></td>
+            <td><strong>GRPO 5ep</strong></td>
+            <td><strong>46.6%</strong></td>
+          </tr>
+        </tbody>
+      </table>
+      <p>
+        GRPO from Base directly achieved 46.6% — <strong>+7.1pp over the best SFT</strong>.
+        This was the first clear validation that RL is the right path.
+      </p>
+
+      <hr />
+
+      <h2>Phase 3: Teaching "I Don't Know" — None Discrimination</h2>
+
+      <h3>The Problem</h3>
+      <p>
+        13% of the validation set consists of <em>critical thinking</em> problems that
+        are intentionally underspecified — the correct answer is <code>None</code>.
+        After initial GRPO training, the model scored <strong>0%</strong> on these problems:
+        it always hallucinated an answer instead of recognizing impossibility.
+      </p>
+
+      <h3>Two-Stage Solution</h3>
+      <ol>
+        <li>
+          <strong>SFT Stage:</strong> Fine-tune the GRPO checkpoint on 150 None-labeled examples
+          (with full "condition check → missing info → None" reasoning chains) + 400 cold-start examples
+          (lr = $2 \times 10^{-6}$, 2 epochs).
+        </li>
+        <li>
+          <strong>GRPO Stage:</strong> Resume GRPO training with the reward function giving bonus
+          points for correct None answers.
+        </li>
+      </ol>
+
+      <h3>Results</h3>
+      <table>
+        <thead>
+          <tr>
+            <th>Model</th>
+            <th>Overall</th>
+            <th>None Acc</th>
+            <th>False Positive</th>
+            <th>Weird Tokens</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>GRPO Base→ep5 (no None)</td>
+            <td>46.6%</td>
+            <td>0%</td>
+            <td>3.8%</td>
+            <td>—</td>
+          </tr>
+          <tr>
+            <td>SFT None only</td>
+            <td>40.7%</td>
+            <td>67.7%</td>
+            <td>22.1%</td>
+            <td>10.8%</td>
+          </tr>
+          <tr>
+            <td><strong>GRPO Mixed (SFT→GRPO)</strong></td>
+            <td><strong>55.7%</strong></td>
+            <td><strong>80.0%</strong></td>
+            <td><strong>14.0%</strong></td>
+            <td><strong>14.0%</strong></td>
+          </tr>
+        </tbody>
+      </table>
+
+      <p><strong>Critical insight:</strong> Build math ability <em>first</em> (GRPO), then teach None
+      discrimination (SFT), then consolidate both (GRPO). Doing None SFT directly from Base
+      caused false positives to explode above 45%.</p>
+
+      <hr />
+
+      <h2>Phase 4: Reward Function Design — Three Generations</h2>
+
+      <p>
+        The reward function is the most critical component of GRPO. I iterated through
+        three versions:
+      </p>
+
+      <h3>v0 — Baseline Reward</h3>
+      <ul>
+        <li>Correct: +1.0; Wrong: −0.1</li>
+        <li>None correct: +1.0; None wrong: −0.5</li>
+        <li>Length penalty outside 30–768 token window</li>
+        <li>Answer-driven only — no <code>&lt;think&gt;</code> format checks</li>
+      </ul>
+
+      <h3>v1 — False Positive Penalty</h3>
+      <p>
+        After the model learned to say "None", it started saying it on <em>answerable</em>
+        problems too. <strong>Fix:</strong> when ground truth is not None and model outputs None, deduct
+        <strong>−0.8</strong> (the harshest single penalty).
+      </p>
+
+      <h3>v2 — Weird Token Penalty</h3>
+      <p>
+        GRPO training produced a peculiar artifact: the model learned to insert non-ASCII
+        characters (private-use Unicode, fullwidth symbols) into answers — likely reward
+        hacking to match ground truth strings.
+      </p>
+      <p>
+        <strong>Fix:</strong> A character-level whitelist allowing ASCII + Greek
+        letters + math operators + arrows. Each out-of-whitelist character penalized −0.01.
+      </p>
+      <p>
+        <strong>Effect:</strong> Weird token rate dropped from 43.5% to 0%.
+      </p>
+
+      <p>
+        <strong>Core lesson:</strong> Length penalty, short-response penalty, false positive
+        penalty, and weird token penalty are <em>all</em> necessary. None can be omitted.
+      </p>
+
+      <hr />
+
+      <h2>Final Results</h2>
+
+      <table>
+        <thead>
+          <tr>
+            <th>Metric</th>
+            <th>Score</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>valid_1000 (Overall)</td>
+            <td><strong>55.2%</strong></td>
+          </tr>
+          <tr>
+            <td>None Recognition</td>
+            <td>69.2%</td>
+          </tr>
+          <tr>
+            <td>False Positive Rate</td>
+            <td>4.3%</td>
+          </tr>
+          <tr>
+            <td>Weird Character Rate</td>
+            <td>0%</td>
+          </tr>
+          <tr>
+            <td>High School Math</td>
+            <td>66.8%</td>
+          </tr>
+          <tr>
+            <td>GSM8K Level</td>
+            <td>67.8%</td>
+          </tr>
+          <tr>
+            <td>Level 3</td>
+            <td>57.4%</td>
+          </tr>
+          <tr>
+            <td>Level 4</td>
+            <td>42.6%</td>
+          </tr>
+          <tr>
+            <td>Olympiad</td>
+            <td>15.9%</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <p>
+        Final pipeline: <strong>Base → SFT (None + Math) → GRPO (6ep, K=10) → GRPO Continue
+        (higher temperature, 2ep)</strong>. Improvement over baseline: <strong>+17pp</strong>.
+      </p>
+
+      <hr />
+
+      <h2>Key Takeaways</h2>
+
+      <ol>
+        <li>
+          <strong>SFT has limits:</strong> For small models, SFT alone cannot substantially
+          improve reasoning. The pass@k signal is a better indicator of capability than
+          greedy accuracy.
+        </li>
+        <li>
+          <strong>RL prerequisite:</strong> RL requires that the model's sampling distribution
+          already contains correct answers (pass@k &gt;&gt; greedy). If the model cannot sample
+          correct solutions, RL has nothing to optimize toward.
+        </li>
+        <li>
+          <strong>Reward design is the hardest part:</strong> Expect 3+ iterations. Every
+          penalty you add can create a new reward hacking vector. Test each version against
+          a diverse validation set.
+        </li>
+        <li>
+          <strong>Order matters:</strong> Build math capability first (GRPO), then teach
+          refusal (SFT), then consolidate both (GRPO). Reversing this order caused massive
+          false positives.
+        </li>
+        <li>
+          <strong>Team workflow:</strong> Clear communication with data teams is essential —
+          explain not just <em>what</em> you need but <em>why</em>, with concrete examples.
+        </li>
+      </ol>
+    </div>
+  );
+}

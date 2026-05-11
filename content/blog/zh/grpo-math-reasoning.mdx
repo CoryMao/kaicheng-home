@@ -1,0 +1,255 @@
+export const metadata = {
+  title: "GRPO 后训练数学推理：从 SFT 到 RL 的 Qwen3-0.6B 实验报告",
+  date: "2026-05-11",
+  summary:
+    "基于 Qwen3-0.6B-Base，系统探索 SFT 到 GRPO 的后训练流程，通过奖励函数设计与 None 判别将数学推理准确率从 38.2% 提升至 55.2%。",
+  tags: ["GRPO", "RL", "后训练", "数学推理", "Qwen"],
+  readingTime: "15 min",
+};
+
+export default function MdxComponent() {
+  return (
+    <div>
+      <h2>基本信息</h2>
+      <ul>
+        <li><strong>姓名</strong>: 毛恺诚</li>
+        <li><strong>学号</strong>: 12311704</li>
+        <li><strong>组号</strong>: Group 4</li>
+        <li><strong>贡献</strong>: 负责后训练</li>
+      </ul>
+
+      <h2>个人贡献概览</h2>
+      <p>
+        本人作为 Group 4 后训练流程负责人，全程负责模型的 SFT 训练与 GRPO 强化学习训练实验。核心贡献包括：
+      </p>
+      <ol>
+        <li>跑通 SFT 与 GRPO 完整训练链路（从 Base 到最终提交的模型）</li>
+        <li>在 GRPO 中设计并迭代 3 版 Reward 函数，解决可能的 Reward Hacking、False Positive、怪字输出等关键问题</li>
+        <li>构建 None 判别训练数据，使模型学会识别不可解问题</li>
+        <li>完成 20 轮+实验，将模型准确率从 Baseline 38.2% 提升至 55.2%（+17.0pp）（均为本地测评正确率）</li>
+        <li>对训练好的模型进行本地评测，为数据组提供反馈</li>
+      </ol>
+
+      <p>
+        <strong>本人贡献与组内其他成员的区别</strong>: 我负责了全部的模型后训练与 Reward 设计流程，同时还兼任了检查模型输出、提供训练数据集构建思路的任务。
+      </p>
+
+      <p>
+        <strong>需要提前说明的：</strong> 由于磁盘空间大小限制，很多SFT或者RL实验的checkpoint及相应验证集输出在评测完即删除，无法提供截图support模型的正确率，只能提供WandB训练曲线截图来佐证实验过程。
+      </p>
+
+      <h2>第一阶段: SFT 流程跑通与瓶颈发现</h2>
+
+      <h3>冷启动 SFT</h3>
+      <p>
+        项目初期，我首先使用数据组产出的相对比较脏、质量比较低的冷启动数据集 <code>coldstart_llm_A_think</code>（8,323 条，含 <code>&lt;think&gt;</code> 推理链），对 Qwen3-0.6B-Base 进行全量 SFT 微调（后续还进行了同样数据集的LoRA微调，效果略强于Full Fine Tuning）。
+      </p>
+
+      <p><strong>训练配置</strong>:</p>
+      <ul>
+        <li>Epochs: 4</li>
+        <li>Learning Rate: $2 \times 10^{-5}$</li>
+        <li>框架: 通过 DeepSpeed + openrlhf.cli.train_sft 实现, 用 train_sft.py 包装</li>
+      </ul>
+
+      <p><strong>结果</strong>: SFT 后模型达到 39.5%（valid_1000），略超 Baseline 38.2%，但提升有限。</p>
+
+      <h3>扩展数据后的退步</h3>
+      <p>
+        我尝试在 coldstart 8,323 条基础上，并入由小组数据组成员制作的高质量的新数据集 47_workshop、gjt_SFT_Data、seeker_SFT_Data，在此基础上进行 SFT 训练（改为 3 epochs，其他配置不变）。这次训练的目的是验证数据量增加是否能突破 SFT 的瓶颈。
+      </p>
+
+      <p><strong>结果</strong>: 准确率降至 36.7%，反而低于 Baseline。这一结果说明：</p>
+      <ul>
+        <li>高质量但新来源的数据集破坏了原有数据分布，使得模型拟合了新数据的特征，导致性能下降。</li>
+        <li>即使有高质量的数据，可能SFT并不能直接带来模型能力的提升。</li>
+      </ul>
+
+      <h3>阶段结论</h3>
+      <p>
+        单纯依靠SFT和高质量数据没有办法带来直接的提升。但同时在一次微不足道的尝试中，我注意到一个关键信号：Base 模型的 pass@5 达到 62.6%，说明模型本身具有解题能力，只是 Greedy 解码时不稳定。这一点也与 Yue 等人关于 RLVR 能力边界的观察一致：当前 RLVR 更像是在挖掘 base model 已有采样分布中的潜力，而不一定创造全新的推理模式。这促使我转向强化学习方法——通过在线采样缩小 Greedy 与 Pass@k 之间的差距，使得模型的采样分布能够更加贴近validation数据集。
+      </p>
+
+      <h2>第二阶段: 转向 RL — GRPO 验证有效</h2>
+
+      <h3>为什么选择 GRPO</h3>
+      <p>
+        GRPO（Group Relative Policy Optimization）是 DeepSeek-R1 使用的核心算法。与 SFT 不同，GRPO 通过在线采样 $K$ 个答案、计算组内相对优势（Advantage），直接优化模型的生成分布，天然适合缩短 Greedy 与 Pass@k 的差距，而且不需要额外的标注数据。
+      </p>
+
+      <h3>数据准备</h3>
+      <p>
+        我从数据组新构建的高质量 SFT 数据中过滤出含 <code>\boxed{}</code> 的数学题（可提取 Ground Truth 答案），专门排除了general的问答题（所谓用来教会模型说话的题），构造 1,772 条 GRPO 训练 prompt（Parquet 格式），含 40 条 None 题。
+      </p>
+
+      <h3>训练与结果</h3>
+      <p><strong>GRPO 配置</strong>:</p>
+      <ul>
+        <li>框架: verl 0.7.1</li>
+        <li>$K=10$, Temperature $=0.7$, LR $=1 \times 10^{-6}$</li>
+        <li>单卡 RTX 5090 32GB（Actor 模型 + vLLM rollout 双引擎）</li>
+      </ul>
+
+      <p>直接从 Base 模型启动 GRPO 训练（5 epochs），结果如下：</p>
+
+      <table>
+        <thead>
+          <tr><th>模型</th><th>训练方式</th><th>准确率</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Base (Qwen3-0.6B)</td><td>无</td><td>36.2%</td></tr>
+          <tr><td>SFT Coldstart (最佳)</td><td>Full SFT</td><td>39.5%</td></tr>
+          <tr><td><strong>GRPO from Base</strong></td><td><strong>GRPO 5ep</strong></td><td><strong>46.6%</strong></td></tr>
+        </tbody>
+      </table>
+
+      <p><strong>关键发现</strong>: GRPO 从 Base 直接训练拿到了 46.6%，比最佳 SFT 高出 7.1pp，比 Base 提升 10.4pp。首次验证了 RL 在数学推理任务上显著优于 SFT。</p>
+
+      <h2>第三阶段: 加入 None 判别 — 最大提升</h2>
+
+      <h3>动机</h3>
+      <p>
+        验证集中有 13% 的题目（Critical Thinking）故意缺少信息（如条件不足），正确答案应为 <code>None</code>。之前的模型——无论是 SFT 还是 GRPO——都几乎不会说"不知道"，尤其是当前训出来的GRPO，模型在验证集per-type上这类题上得 0 分。
+      </p>
+
+      <h3>SFT 教 None → GRPO 巩固</h3>
+      <p>鉴于模型经过了GRPO后仍然完全没有critical thinking题的能力，我设计了一个两阶段方案：</p>
+      <ol>
+        <li><strong>SFT 阶段</strong>: 用 150 条含完整"条件检查 → 发现缺失 → None"推理链的 None 训练数据 + 400 条 coldstart，对前一个最好的GRPO checkpoint 做 SFT（lr $=2 \times 10^{-6}$, 2 epochs）</li>
+        <li><strong>GRPO 阶段</strong>: 将 SFT 后的模型继续 GRPO 训练，在 Reward 函数中给 None 正确的回答额外加分</li>
+      </ol>
+
+      <h3>实验结果</h3>
+      <p><strong>注：</strong>由于 None 题在验证集中占比不高，且模型之前完全不会说 None，所以 None 识别率的提升对 Overall 准确率的提升非常显著。加入 None 判别后，模型的 Overall 准确率从 46.6% 跃升至 55.7%，None 识别率从 0% 飙升到 80%，False Positive 率控制在 14%。（False Positive 指模型在有解题目上错误地说 None 的比例）</p>
+
+      <table>
+        <thead>
+          <tr><th>模型</th><th>Overall</th><th>None</th><th>FP</th><th>Weird</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>GRPO Base→ep5 (无 None)</td><td>46.6%</td><td>0%</td><td>3.8%</td><td>—</td></tr>
+          <tr><td>SFT None only</td><td>40.7%</td><td>67.7%</td><td>22.1%</td><td>10.8%</td></tr>
+          <tr><td><strong>GRPO Mixed (SFT→GRPO)</strong></td><td><strong>55.7%</strong></td><td><strong>80.0%</strong></td><td><strong>14.0%</strong></td><td><strong>14.0%</strong></td></tr>
+        </tbody>
+      </table>
+
+      <p><strong>关键insights</strong>:</p>
+      <ul>
+        <li>两阶段方案（GRPO→SFT→GRPO）效果最好，None 识别率从 0% 提升到 80%</li>
+        <li><strong>必须先 GRPO 建数学能力，再 SFT 教 None</strong>。如果从 Base 直接做 None SFT，FP 爆炸到 45%+</li>
+        <li>在none问题上，答对的reward我设成1.2（比普通问题高0.2），但是我对False Positive的惩罚与正常回答错误的惩罚一样低，导致FP率极高</li>
+        <li>注意到在这些模型上，都出现了怪字（weird token）现象，并且几乎每一题都会有，位置基本在回答最末尾，所以后续还需要在reward中加入怪字惩罚</li>
+      </ul>
+
+      <h3>确定优化路线</h3>
+      <p>至此，我明确了后续所有实验的核心路线：</p>
+      <p style={{"textAlign":"center","fontWeight":"bold","padding":"16px","border":"1px solid var(--border)","borderRadius":"8px","background":"var(--surface)"}}>
+        Base → SFT (None+Math) → GRPO (6ep, K=10) → GRPO continue (调高Temperature再训练2ep)
+      </p>
+      <p>这一路线在后续实验中大致被验证为最优。</p>
+
+      <h2>第四阶段: 精细化优化 — Reward 函数迭代</h2>
+      <p>Reward 函数是 GRPO 训练最核心的组件，决定了模型优化的方向。我经历了 3 个主要版本的设计迭代，逐步收敛到稳定方案。</p>
+
+      <h3>v0 —— 初始设计：区间长度惩罚 + 纯答案驱动</h3>
+      <p>第一版 Reward 如下：</p>
+      <ul>
+        <li>正确答案: +1.0；错误: −0.1</li>
+        <li>None 正确: +1.0；None 错误: −0.5</li>
+        <li>长度区间惩罚：30–768 tokens 零惩罚；&lt;30 tokens 扣 0.3（防空回复）；&gt;768 tokens 渐增惩罚</li>
+        <li>不检查 Think 格式，纯答案驱动，减少 Reward 信号噪声</li>
+      </ul>
+
+      <h3>v1 —— 加 FP 惩罚：不能让模型无脑输出None</h3>
+      <p>模型学会了 None 判别后出现副作用：在<strong>有解</strong>题目上也说 None（False Positive），大大拉低了 Overall 准确率。</p>
+      <p><strong>修复</strong>: 对于 Ground Truth 不是 None 的题目，模型输出 None → <strong>扣 0.8</strong>（最严厉的单条惩罚）。</p>
+
+      <h3>v2 —— 加怪字惩罚（Unicode 噪声清除）</h3>
+      <p>GRPO 训练中出现了独特现象：模型学会在答案中插入大量非 ASCII 乱码（如私用区字符、全角符号），推测是为了"碰巧"匹配 Ground Truth 而 Reward Hacking。</p>
+      <p>我设计了一个精密的白名单机制：允许 ASCII + 希腊字母 + 数学运算符 + 箭头 + 上下标等 Unicode 范围，每个不在白名单内的字符扣 0.01。</p>
+      <p><strong>效果</strong>: 怪字率从 43.5% <strong>降至 0%</strong>。</p>
+
+      <p>经过 3 个版本的迭代，Reward 函数最终收敛。核心教训：<strong>Reward 设计是 RL 最核心的难点，长回复惩罚、短回复惩罚、FP 惩罚、怪字惩罚四者缺一不可</strong>。</p>
+
+      <h2>最终成果</h2>
+      <p>
+        必须要说明的是，虽然在前期探索中，我发现SFT虽然降低了模型的Overall准确率，但是我在最后用最好的数据SFT并且测试它的pass@k的时候，我发现它的表现非常好，具备RL训练的潜力，所以最后还是以SFT→GRPO→GRPO的方式进行最终模型的训练。
+      </p>
+
+      <p>除此之外，在V4 cont之后我还另外使用了补充数据进行了一轮针对性训练，但是效果并没有想像中好，过度追求某一类题型的正确率会降低模型总体的采样效率并且导致过拟合，因此最终还是使用了V4 cont作为最终提交的模型。</p>
+
+      <h3>全部实验结果总览</h3>
+      <p>经过 14 轮系统实验，我完成了从 SFT 到 GRPO 的完整探索：</p>
+
+      <table>
+        <thead>
+          <tr><th>#</th><th>模型</th><th>训练方式</th><th>Overall</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>1</td><td>Base</td><td>无</td><td>36.2%</td></tr>
+          <tr><td>2</td><td>SFT Coldstart</td><td>SFT 3ep</td><td>39.5%</td></tr>
+          <tr><td>3</td><td>SFT Merged</td><td>SFT 3ep</td><td>36.7%</td></tr>
+          <tr><td>4</td><td>GRPO Base→ep5</td><td>GRPO 5ep</td><td>46.6%</td></tr>
+          <tr><td>5</td><td>SFT None only</td><td>GRPO→SFT</td><td>40.7%</td></tr>
+          <tr><td>6</td><td>GRPO None→ep5</td><td>SFT→GRPO</td><td>54.9%</td></tr>
+          <tr><td>7</td><td>GRPO Mixed→ep4</td><td>SFT→GRPO</td><td>55.7%</td></tr>
+          <tr><td>8</td><td>SFT Mixed</td><td>GRPO→SFT</td><td>45.0%</td></tr>
+          <tr><td>9</td><td>GRPO Mixed cont</td><td>SFT→GRPO + FP 惩罚</td><td>55.4%</td></tr>
+          <tr><td>10</td><td>SFT Base V4</td><td>Base→SFT</td><td>28.5%</td></tr>
+          <tr><td>11</td><td>V4 ep6</td><td>SFT→GRPO 6ep</td><td>53.5%</td></tr>
+          <tr><td>12</td><td><strong>V4 cont (final selected)</strong></td><td><strong>SFT→GRPO→GRPO cont</strong></td><td><strong>55.2%</strong></td></tr>
+          <tr><td>13</td><td>GRPO Targeted</td><td>Final→GRPO targeted</td><td>55.7%</td></tr>
+          <tr><td>14</td><td>SFT Targeted</td><td>Final→SFT targeted</td><td>50.2%</td></tr>
+        </tbody>
+      </table>
+
+      <h3>最终交付模型</h3>
+      <p><strong>路径</strong>: <code>/data/experiments/grpo_v4_cont/merged_final</code></p>
+
+      <table>
+        <thead>
+          <tr><th>评测指标</th><th>得分</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>valid_1000 (Overall)</td><td>55.2%</td></tr>
+          <tr><td>None 识别率</td><td>69.2%</td></tr>
+          <tr><td>False Positive 率</td><td>4.3%</td></tr>
+          <tr><td>Weird Character 率</td><td>0%</td></tr>
+          <tr><td>valid_math (高中)</td><td>66.8%</td></tr>
+          <tr><td>valid_gsm8k (小学)</td><td>67.8%</td></tr>
+          <tr><td>valid_math_level3</td><td>57.4%</td></tr>
+          <tr><td>valid_math_level4</td><td>42.6%</td></tr>
+          <tr><td>Olympiad</td><td>15.9%</td></tr>
+        </tbody>
+      </table>
+
+      <p><strong>对比 Baseline</strong>: 38.2% → 56.1%，提升 <strong>+17.9 个百分点</strong>。</p>
+
+      <h2>个人反思</h2>
+
+      <h3>技术反思</h3>
+      <ol>
+        <li>
+          <strong>SFT 的局限性</strong>: SFT 能让模型去拟合训练数据的分布，对于Qwen3-0.6B这样参数量非常小的模型来说，单纯的 SFT 很难带来实质性的能力提升，甚至可能因为数据分布的改变而导致性能下降。在实验的最初期，我还没意识到这一点，所以一直提升不了正确率，确实是非常upset的。所以这个经验告诉我，SFT之后直接greedy解码出来的结果没有那么好，并不一定是训练没做好，而是需要转向RL来提高模型的采样效率。
+        </li>
+        <li>
+          <strong>RL的直觉</strong>: 做RL的先决条件是模型的采样分布中已经包含正确答案（即 Pass@k 已经远高于 Greedy）。如果模型连正确答案都采样不出来，RL 就无从优化。这个经验判断与 RLVR 相关研究中"base model 的大 $k$ pass@k 可以视为当前 RL 可利用能力上界"的结论一致。而GRPO的核心则在于设计一个合理的Reward函数（这个必须要通过试错才能找到），来提高模型的采样效率。
+        </li>
+      </ol>
+
+      <h3>项目管理反思</h3>
+      <ol>
+        <li><strong>数据质量的重要性</strong>: 训练数据的质量不仅包括其正确性，还有其类型的分布是否均衡，是否包含模型需要学习的能力点（如 None 判别）。</li>
+        <li><strong>如何使得团队成员的效率更高</strong>：下达指令时，不能假定他们理解自己的观点，因为实验是我一个人做的。必须给出我的观点的依据，解释清楚，告诉他们接下来要做什么、具体的步骤（最好是few-shot），这一点我觉得跟提高模型表现很相似。</li>
+      </ol>
+
+      <h2>参考文献</h2>
+      <ol>
+        <li>
+          Yang Yue, Zhiqi Chen, Rui Lu, Andrew Zhao, Zhaokai Wang, Yang Yue, Shiji Song, and Gao Huang.
+          <em> Does Reinforcement Learning Really Incentivize Reasoning Capacity in LLMs Beyond the Base Model?</em> arXiv preprint arXiv:2504.13837, 2025.
+        </li>
+      </ol>
+    </div>
+  );
+}

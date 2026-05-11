@@ -3,6 +3,12 @@ import "server-only";
 import type { ComponentType } from "react";
 import type { MDXProps } from "mdx/types";
 
+import BlogGrpoMathReasoningEn, {
+  metadata as blogGrpoMathReasoningEnMetadata,
+} from "@/content/blog/en/grpo-math-reasoning.mdx";
+import BlogGrpoMathReasoningZh, {
+  metadata as blogGrpoMathReasoningZhMetadata,
+} from "@/content/blog/zh/grpo-math-reasoning.mdx";
 import BlogProjectSurvivalAnalysisEn, {
   metadata as blogProjectSurvivalAnalysisEnMetadata,
 } from "@/content/blog/en/project-1-survival-analysis.mdx";
@@ -27,6 +33,8 @@ type ArticleRecord = ArticleSummary & {
 };
 
 const staticRecords: ArticleRecord[] = [
+  article("blog", "en", "grpo-math-reasoning", blogGrpoMathReasoningEnMetadata, BlogGrpoMathReasoningEn),
+  article("blog", "zh", "grpo-math-reasoning", blogGrpoMathReasoningZhMetadata, BlogGrpoMathReasoningZh),
   article("blog", "en", "project-1-survival-analysis", blogProjectSurvivalAnalysisEnMetadata, BlogProjectSurvivalAnalysisEn),
   article("life", "en", "weekend-walk", lifeWeekendWalkEnMetadata, LifeWeekendWalkEn),
   article("life", "zh", "weekend-walk", lifeWeekendWalkZhMetadata, LifeWeekendWalkZh),

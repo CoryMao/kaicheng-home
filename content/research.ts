@@ -65,6 +65,14 @@ export const researchProfiles: Record<Locale, ResearchProfile> = {
     ],
     projects: [
       {
+        title: "GRPO Post-Training for Math Reasoning",
+        year: "2026",
+        summary:
+          "Systematically explored SFT-to-GRPO post-training on Qwen3-0.6B-Base, improving math reasoning accuracy from 38.2% to 55.2% through reward function design and None discrimination.",
+        tags: ["GRPO", "RL", "post-training", "math-reasoning"],
+        featured: true,
+      },
+      {
         title: "Bilingual academic homepage",
         year: "2026",
         summary:
@@ -122,6 +130,14 @@ export const researchProfiles: Record<Locale, ResearchProfile> = {
       },
     ],
     projects: [
+      {
+        title: "GRPO 数学推理后训练",
+        year: "2026",
+        summary:
+          "系统探索 Qwen3-0.6B-Base 的 SFT 到 GRPO 后训练流程，通过奖励函数设计与 None 判别将数学推理准确率从 38.2% 提升至 55.2%。",
+        tags: ["GRPO", "RL", "后训练", "数学推理"],
+        featured: true,
+      },
       {
         title: "双语学术个人主页",
         year: "2026",
