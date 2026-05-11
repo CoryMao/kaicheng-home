@@ -53,6 +53,7 @@ export default function MdxComponent() {
       </ul>
 
       <p><strong>结果</strong>: SFT 后模型达到 39.5%（valid_1000），略超 Baseline 38.2%，但提升有限。</p>
+      <p><img src="/media/blog/grpo-math-reasoning/sft-coldstart-wandb.png" alt="SFT Coldstart 训练过程" /></p>
 
       <h3>扩展数据后的退步</h3>
       <p>
@@ -64,6 +65,7 @@ export default function MdxComponent() {
         <li>高质量但新来源的数据集破坏了原有数据分布，使得模型拟合了新数据的特征，导致性能下降。</li>
         <li>即使有高质量的数据，可能SFT并不能直接带来模型能力的提升。</li>
       </ul>
+      <p><img src="/media/blog/grpo-math-reasoning/sft-coldstart+new-wandb.png" alt="SFT Coldstart + 3 Sources 训练结果" /></p>
 
       <h3>阶段结论</h3>
       <p>
@@ -104,6 +106,7 @@ export default function MdxComponent() {
       </table>
 
       <p><strong>关键发现</strong>: GRPO 从 Base 直接训练拿到了 46.6%，比最佳 SFT 高出 7.1pp，比 Base 提升 10.4pp。首次验证了 RL 在数学推理任务上显著优于 SFT。</p>
+      <p><img src="/media/blog/grpo-math-reasoning/GRPO Base-5ep-wandb.png" alt="GRPO Base→5ep 训练监控" /></p>
 
       <h2>第三阶段: 加入 None 判别 — 最大提升</h2>
 
@@ -111,6 +114,7 @@ export default function MdxComponent() {
       <p>
         验证集中有 13% 的题目（Critical Thinking）故意缺少信息（如条件不足），正确答案应为 <code>None</code>。之前的模型——无论是 SFT 还是 GRPO——都几乎不会说"不知道"，尤其是当前训出来的GRPO，模型在验证集per-type上这类题上得 0 分。
       </p>
+      <p><img src="/media/blog/grpo-math-reasoning/pertypeoffirstRL.png" alt="首次 GRPO 模型的各题型表现" /></p>
 
       <h3>SFT 教 None → GRPO 巩固</h3>
       <p>鉴于模型经过了GRPO后仍然完全没有critical thinking题的能力，我设计了一个两阶段方案：</p>
@@ -163,11 +167,20 @@ export default function MdxComponent() {
       <h3>v1 —— 加 FP 惩罚：不能让模型无脑输出None</h3>
       <p>模型学会了 None 判别后出现副作用：在<strong>有解</strong>题目上也说 None（False Positive），大大拉低了 Overall 准确率。</p>
       <p><strong>修复</strong>: 对于 Ground Truth 不是 None 的题目，模型输出 None → <strong>扣 0.8</strong>（最严厉的单条惩罚）。</p>
+      <p><img src="/media/blog/grpo-math-reasoning/GRPO Base-5epFP率.png" alt="FP 惩罚效果" /></p>
 
       <h3>v2 —— 加怪字惩罚（Unicode 噪声清除）</h3>
       <p>GRPO 训练中出现了独特现象：模型学会在答案中插入大量非 ASCII 乱码（如私用区字符、全角符号），推测是为了"碰巧"匹配 Ground Truth 而 Reward Hacking。</p>
       <p>我设计了一个精密的白名单机制：允许 ASCII + 希腊字母 + 数学运算符 + 箭头 + 上下标等 Unicode 范围，每个不在白名单内的字符扣 0.01。</p>
       <p><strong>效果</strong>: 怪字率从 43.5% <strong>降至 0%</strong>。</p>
+      <p>
+        <img src="/media/blog/grpo-math-reasoning/怪字符输出.png" alt="怪字惩罚前" />
+        <em>惩罚前：GRPO Mixed 训练出现怪字现象</em>
+      </p>
+      <p>
+        <img src="/media/blog/grpo-math-reasoning/怪字符惩罚后.png" alt="怪字惩罚后" />
+        <em>惩罚后：输出结果正常</em>
+      </p>
 
       <p>经过 3 个版本的迭代，Reward 函数最终收敛。核心教训：<strong>Reward 设计是 RL 最核心的难点，长回复惩罚、短回复惩罚、FP 惩罚、怪字惩罚四者缺一不可</strong>。</p>
 
@@ -175,8 +188,12 @@ export default function MdxComponent() {
       <p>
         必须要说明的是，虽然在前期探索中，我发现SFT虽然降低了模型的Overall准确率，但是我在最后用最好的数据SFT并且测试它的pass@k的时候，我发现它的表现非常好，具备RL训练的潜力，所以最后还是以SFT→GRPO→GRPO的方式进行最终模型的训练。
       </p>
+      <p><img src="/media/blog/grpo-math-reasoning/SFT-Base-V4的pass@k.png" alt="SFT Base V4 的 Pass@k 表现" /></p>
 
       <p>除此之外，在V4 cont之后我还另外使用了补充数据进行了一轮针对性训练，但是效果并没有想像中好，过度追求某一类题型的正确率会降低模型总体的采样效率并且导致过拟合，因此最终还是使用了V4 cont作为最终提交的模型。</p>
+      <p><img src="/media/blog/grpo-math-reasoning/SFT-v4-wandb.png" alt="SFT V4 训练监控" /></p>
+      <p><img src="/media/blog/grpo-math-reasoning/GRPO-V4-ep6-wandb.png" alt="GRPO V4 ep6 训练监控" /></p>
+      <p><img src="/media/blog/grpo-math-reasoning/GRPO-cont-wandb.png" alt="GRPO V4 Continue 训练监控" /></p>
 
       <h3>全部实验结果总览</h3>
       <p>经过 14 轮系统实验，我完成了从 SFT 到 GRPO 的完整探索：</p>
@@ -224,6 +241,8 @@ export default function MdxComponent() {
       </table>
 
       <p><strong>对比 Baseline</strong>: 38.2% → 56.1%，提升 <strong>+17.9 个百分点</strong>。</p>
+      <p><img src="/media/blog/grpo-math-reasoning/wandb运行记录.png" alt="全部实验 WandB 总览" /></p>
+      <p><img src="/media/blog/grpo-math-reasoning/v4-cont-最终表现.png" alt="最终模型评测结果" /></p>
 
       <h2>个人反思</h2>
 
