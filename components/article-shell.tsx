@@ -11,16 +11,30 @@ export function ArticleShell({
   locale,
   backHref,
   backLabel,
+  adminBackHref,
   children,
 }: {
   article: ArticleSummary;
   locale: Locale;
   backHref: string;
   backLabel: string;
+  adminBackHref?: string;
   children: React.ReactNode;
 }) {
   return (
     <article className="mx-auto w-full max-w-3xl px-4 py-12 sm:px-6 lg:px-8">
+      {adminBackHref ? (
+        <div className="mb-6 rounded-lg border border-accent/30 bg-accent/5 px-4 py-2.5">
+          <Link
+            href={adminBackHref}
+            className="inline-flex items-center gap-2 text-sm font-medium text-accent transition hover:text-foreground"
+          >
+            <ArrowLeft aria-hidden="true" className="size-4" />
+            返回管理后台
+          </Link>
+        </div>
+      ) : null}
+
       <Link
         href={backHref}
         className="inline-flex items-center gap-2 text-sm font-semibold text-accent transition hover:text-foreground"

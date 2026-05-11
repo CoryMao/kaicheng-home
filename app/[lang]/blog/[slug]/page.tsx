@@ -1,3 +1,4 @@
+import { cookies } from "next/headers";
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 
@@ -38,8 +39,12 @@ export default async function BlogPostPage({ params }: PageProps) {
 
   const { metadata, kind, locale: aLocale, slug: aSlug } = article;
 
+  const cookieStore = await cookies();
+  const adminBackHref =
+    cookieStore.get("admin-verified")?.value === "1" ? "/admin/articles" : undefined;
+
   return (
-    <ArticleShell article={{ kind, locale: aLocale, slug: aSlug, metadata }} locale={locale} backHref={`/${locale}/blog`} backLabel={dictionary.common.backToBlog}>
+    <ArticleShell article={{ kind, locale: aLocale, slug: aSlug, metadata }} locale={locale} backHref={`/${locale}/blog`} backLabel={dictionary.common.backToBlog} adminBackHref={adminBackHref}>
       {"Component" in article && article.Component ? <article.Component /> : "content" in article && article.content ? <DbArticleRenderer source={article.content as string} /> : notFound()}
     </ArticleShell>
   );

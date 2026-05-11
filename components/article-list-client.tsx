@@ -82,6 +82,7 @@ export function ArticleListClient({ articles: initialArticles }: { articles: Art
                       <Link href={`/${a.locale}/${a.kind}/${a.slug}`} className="text-xs text-muted hover:text-foreground">查看</Link>
                     ) : (
                       <span className="flex gap-3 justify-end">
+                        <Link href={`/${a.locale}/${a.kind}/${a.slug}`} className="text-xs text-muted hover:text-foreground">查看</Link>
                         <Link href={`/admin/articles/${id}/edit`} className="text-xs font-medium text-accent hover:underline">编辑</Link>
                         <button onClick={() => handleDelete(id)} disabled={deleting === id} className="text-xs font-medium text-accent-strong hover:underline disabled:opacity-50">删除</button>
                       </span>
