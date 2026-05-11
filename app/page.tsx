@@ -58,8 +58,16 @@ export default function GatePage() {
   }
 
   return (
-    <div className="h-screen overflow-hidden bg-background">
-      <div className="flex h-full flex-col items-center justify-center">
+    <div
+        className="h-screen overflow-hidden"
+        style={{
+          background: `
+            linear-gradient(var(--background), var(--background)),
+            url("/media/bg.jpg") center / cover no-repeat
+          `,
+        }}
+      >
+        <div className="flex h-full flex-col items-center justify-center">
         {showPassword ? (
           <div className="mx-4 w-full max-w-sm">
             <LiquidGlass
@@ -118,7 +126,7 @@ export default function GatePage() {
             </LiquidGlass>
           </div>
         ) : (
-          <div className="mx-4 flex flex-col items-center gap-8 sm:flex-row">
+          <div className="flex flex-col items-center justify-center gap-8 sm:flex-row px-4">
             <div ref={visitorRef}>
               <LiquidGlass
                 mode="prominent"
