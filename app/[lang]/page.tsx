@@ -44,7 +44,19 @@ export default async function HomePage({ params }: PageProps) {
 
   return (
     <div className="mx-auto w-full max-w-6xl px-4 py-10 sm:px-6 sm:py-14 lg:px-8">
-      <section className="grid gap-10 lg:grid-cols-[1.1fr_0.9fr] lg:items-center">
+      <section className="grid gap-10 lg:grid-cols-[0.8fr_1.2fr] lg:items-start">
+        <div>
+          <ProfilePhotoGallery photos={profile.portraits} name={profile.name} />
+          <div className="mt-4 rounded-lg border border-border bg-surface p-4">
+            <p className="text-sm font-semibold text-foreground">
+              {profile.status}
+            </p>
+            <p className="mt-2 text-sm leading-6 text-muted">
+              {profile.shortBio}
+            </p>
+          </div>
+        </div>
+
         <div>
           <p className="text-xs font-semibold uppercase tracking-[0.2em] text-accent">
             {dictionary.home.eyebrow}
@@ -91,18 +103,6 @@ export default async function HomePage({ params }: PageProps) {
             </a>
           </div>
           <SocialLinks links={profile.links} className="mt-5" />
-        </div>
-
-        <div className="relative">
-          <ProfilePhotoGallery photos={profile.portraits} name={profile.name} />
-          <div className="mt-4 rounded-lg border border-border bg-surface p-4">
-            <p className="text-sm font-semibold text-foreground">
-              {profile.status}
-            </p>
-            <p className="mt-2 text-sm leading-6 text-muted">
-              {profile.shortBio}
-            </p>
-          </div>
         </div>
       </section>
 

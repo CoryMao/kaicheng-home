@@ -58,9 +58,8 @@ export default function GatePage() {
   }
 
   return (
-    <div className="fixed inset-0 overflow-hidden bg-background">
-      {/* Gate — centered in viewport */}
-      <div className="absolute inset-0 flex items-center justify-center">
+    <div className="h-screen overflow-hidden bg-background">
+      <div className="flex h-full flex-col items-center justify-center">
         {showPassword ? (
           <div className="mx-4 w-full max-w-sm">
             <LiquidGlass
