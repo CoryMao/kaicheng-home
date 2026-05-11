@@ -38,8 +38,8 @@ export default async function HomePage({ params }: PageProps) {
   const profile = profiles[locale];
   const research = researchProfiles[locale];
   const dictionary = getDictionary(locale);
-  const blogPosts = getArticles("blog", locale).slice(0, 2);
-  const lifeNotes = getArticles("life", locale).slice(0, 2);
+  const blogPosts = (await getArticles("blog", locale)).slice(0, 2);
+  const lifeNotes = (await getArticles("life", locale)).slice(0, 2);
   const cvPath = getCvPath(locale);
 
   return (
