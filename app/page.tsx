@@ -24,22 +24,22 @@ export default function GatePage() {
     const x = (rect.left + rect.width / 2) / window.innerWidth;
     const y = (rect.top + rect.height / 2) / window.innerHeight;
     confetti({
-      particleCount: 80,
-      spread: 120,
-      startVelocity: 45,
+      particleCount: 100,
+      spread: 140,
+      startVelocity: 55,
       origin: { x, y },
-      colors: ["#fbfaf7", "#0f766e", "#d97706", "#a16207"],
+      colors: ["#fbfaf7", "#0f766e", "#d97706", "#a16207", "#fda4af"],
     });
   }
 
   function handleVisitor() {
     triggerConfetti(visitorRef.current);
-    setTimeout(() => router.push("/en"), 350);
+    setTimeout(() => router.push("/en"), 400);
   }
 
   function handleOwner() {
     triggerConfetti(ownerRef.current);
-    setTimeout(() => setShowPassword(true), 350);
+    setTimeout(() => setShowPassword(true), 400);
   }
 
   function handlePasswordSubmit(e: React.FormEvent) {
@@ -51,34 +51,36 @@ export default function GatePage() {
       document.cookie = `${COOKIE_NAME}=1; expires=${expires}; path=/; samesite=lax`;
       setError(false);
       triggerConfetti(ownerRef.current);
-      setTimeout(() => router.push("/en"), 350);
+      setTimeout(() => router.push("/en"), 400);
     } else {
       setError(true);
     }
   }
 
   return (
-    <div className="relative min-h-screen overflow-hidden bg-background">
-      {/* Blurred homepage background via iframe */}
-      <div className="absolute inset-0 overflow-hidden">
+    <div className="fixed inset-0 overflow-hidden bg-background">
+      {/* Blurred homepage background */}
+      <div className="absolute inset-0">
         <iframe
           src="/en"
           title=""
-          className="h-full w-full scale-110 blur-xl opacity-25"
+          className="h-full w-full scale-110 blur-xl opacity-20"
           style={{ border: "none", pointerEvents: "none" }}
         />
-        <div className="absolute inset-0 bg-background/60" />
       </div>
+      <div className="absolute inset-0 bg-background/50" />
 
-      {/* Gate overlay */}
-      <div className="relative z-10 flex min-h-screen items-center justify-center">
+      {/* Gate overlay — centered in viewport */}
+      <div className="absolute inset-0 flex items-center justify-center">
         {showPassword ? (
-          /* Password modal */
           <div className="mx-4 w-full max-w-sm">
             <LiquidGlass
               mode="prominent"
-              cornerRadius={24}
-              className="px-8 py-10"
+              cornerRadius={20}
+              blurAmount={10}
+              saturation={1.3}
+              overLight
+              className="block px-8 py-10"
             >
               <div className="text-center">
                 <h2 className="text-xl font-semibold tracking-tight text-foreground">
@@ -128,13 +130,15 @@ export default function GatePage() {
             </LiquidGlass>
           </div>
         ) : (
-          /* Main choice */
-          <div className="mx-4 flex flex-col items-center gap-10 sm:flex-row">
+          <div className="mx-4 flex flex-col items-center gap-8 sm:flex-row">
             <div ref={visitorRef}>
               <LiquidGlass
                 mode="prominent"
-                cornerRadius={24}
-                className="px-12 py-10"
+                cornerRadius={20}
+                blurAmount={10}
+                saturation={1.3}
+                overLight
+                className="block min-w-[200px] px-10 py-8"
                 onClick={handleVisitor}
               >
                 <div className="select-none text-center">
@@ -152,8 +156,11 @@ export default function GatePage() {
             <div ref={ownerRef}>
               <LiquidGlass
                 mode="prominent"
-                cornerRadius={24}
-                className="px-12 py-10"
+                cornerRadius={20}
+                blurAmount={10}
+                saturation={1.3}
+                overLight
+                className="block min-w-[200px] px-10 py-8"
                 onClick={handleOwner}
               >
                 <div className="select-none text-center">
