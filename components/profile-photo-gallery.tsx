@@ -36,7 +36,7 @@ export function ProfilePhotoGallery({
           className="object-cover"
         />
       </div>
-      <div className="mt-3 flex justify-center gap-2">
+      <div className="mt-3 flex justify-start gap-2 max-w-[280px]">
         {photos.map((photo, index) => (
           <button
             key={photo.src}

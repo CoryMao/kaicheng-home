@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { ArrowRight, FileText, Mail, MapPin } from "lucide-react";
 
+import { LiquidGlass } from "@/components/liquid-glass";
 import { ArticleCard } from "@/components/article-card";
 import { ProfilePhotoGallery } from "@/components/profile-photo-gallery";
 import { SectionHeading } from "@/components/section-heading";
@@ -47,14 +48,14 @@ export default async function HomePage({ params }: PageProps) {
       <section className="grid gap-10 lg:grid-cols-[0.8fr_1.2fr] lg:items-start">
         <div>
           <ProfilePhotoGallery photos={profile.portraits} name={profile.name} />
-          <div className="mt-4 rounded-lg border border-border bg-surface p-4">
+          <LiquidGlass cornerRadius={12} blurAmount={10} className="mt-4 p-4">
             <p className="text-sm font-semibold text-foreground">
               {profile.status}
             </p>
             <p className="mt-2 text-sm leading-6 text-muted">
               {profile.shortBio}
             </p>
-          </div>
+          </LiquidGlass>
         </div>
 
         <div>

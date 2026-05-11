@@ -3,7 +3,7 @@
 import { useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import confetti from "canvas-confetti";
-import LiquidGlass from "liquid-glass-react";
+import { LiquidGlass } from "@/components/liquid-glass";
 
 const COOKIE_NAME = "admin-verified";
 const COOKIE_DAYS = 30;
@@ -59,23 +59,26 @@ export default function GatePage() {
 
   return (
     <div
-        className="h-screen overflow-hidden"
+        className="relative h-dvh overflow-hidden"
         style={{
-          background: `
-            linear-gradient(var(--background), var(--background)),
-            url("/media/bg.jpg") center / cover no-repeat
-          `,
+          background:
+            "url('/media/bg.jpg') center / cover no-repeat",
         }}
       >
-        <div className="flex h-full flex-col items-center justify-center">
+        {/* Semi-transparent overlay to let the background image show through */}
+        <div
+          className="absolute inset-0"
+          style={{
+            backgroundColor: "var(--background)",
+            opacity: 0.8,
+          }}
+        />
+        <div className="absolute inset-0 z-10 flex items-center justify-center">
         {showPassword ? (
           <div className="mx-4 w-full max-w-sm">
             <LiquidGlass
-              mode="prominent"
               cornerRadius={20}
               blurAmount={10}
-              saturation={1.3}
-              overLight
               className="block px-8 py-10"
             >
               <div className="text-center">
@@ -127,14 +130,11 @@ export default function GatePage() {
           </div>
         ) : (
           <div className="flex flex-col items-center justify-center gap-8 sm:flex-row px-4">
-            <div ref={visitorRef}>
+            <div ref={visitorRef} className="w-full sm:w-auto">
               <LiquidGlass
-                mode="prominent"
                 cornerRadius={20}
                 blurAmount={10}
-                saturation={1.3}
-                overLight
-                className="block min-w-[200px] px-10 py-8"
+                className="block w-full sm:w-[220px] px-10 py-8"
                 onClick={handleVisitor}
               >
                 <div className="select-none text-center">
@@ -149,14 +149,11 @@ export default function GatePage() {
               </LiquidGlass>
             </div>
 
-            <div ref={ownerRef}>
+            <div ref={ownerRef} className="w-full sm:w-auto">
               <LiquidGlass
-                mode="prominent"
                 cornerRadius={20}
                 blurAmount={10}
-                saturation={1.3}
-                overLight
-                className="block min-w-[200px] px-10 py-8"
+                className="block w-full sm:w-[220px] px-10 py-8"
                 onClick={handleOwner}
               >
                 <div className="select-none text-center">

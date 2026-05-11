@@ -65,6 +65,10 @@ body::after {
   pointer-events: none;
 }
 
+.no-transition * {
+  transition: none !important;
+}
+
 ::selection {
   background: color-mix(in srgb, var(--accent) 22%, transparent);
 }

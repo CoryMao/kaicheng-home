@@ -1,14 +1,15 @@
 "use client";
 
 import Link from "next/link";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 export function AdminEntryButton() {
-  const [isAdmin] = useState(() => {
-    if (typeof document === "undefined") return false;
+  const [isAdmin, setIsAdmin] = useState(false);
+
+  useEffect(() => {
     const match = document.cookie.match(/(?:^|; )admin-verified=([^;]*)/);
-    return match?.[1] === "1";
-  });
+    setIsAdmin(match?.[1] === "1");
+  }, []);
 
   if (!isAdmin) return null;
 
