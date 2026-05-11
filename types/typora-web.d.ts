@@ -20,3 +20,24 @@ declare module "typora-web" {
 
 declare module "typora-web/widgets.css";
 declare module "typora-web/theme-typora.css";
+
+declare module "canvas-confetti" {
+  interface ConfettiOptions {
+    particleCount?: number;
+    angle?: number;
+    spread?: number;
+    startVelocity?: number;
+    decay?: number;
+    gravity?: number;
+    drift?: number;
+    ticks?: number;
+    origin?: { x?: number; y?: number };
+    colors?: string[];
+    shapes?: string[];
+    scalar?: number;
+    zIndex?: number;
+    disableForReducedMotion?: boolean;
+  }
+  function confetti(options?: ConfettiOptions): Promise<null>;
+  export = confetti;
+}

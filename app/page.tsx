@@ -1,143 +1,174 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useRef, useState } from "react";
 import { useRouter } from "next/navigation";
+import confetti from "canvas-confetti";
+import LiquidGlass from "liquid-glass-react";
 
 const COOKIE_NAME = "admin-verified";
 const COOKIE_DAYS = 30;
 
-const t = {
-  zh: {
-    welcome: "欢迎",
-    subtitle: "你是访客还是本人？",
-    visitor: "访客",
-    owner: "本人",
-    enterCode: "输入访问码",
-    codeHint: "请输入管理后台访问码以继续。",
-    codePlaceholder: "输入访问码",
-    wrongCode: "访问码不正确",
-    back: "返回",
-    confirm: "确认",
-  },
-  en: {
-    welcome: "Welcome",
-    subtitle: "Are you a visitor or the owner?",
-    visitor: "Visitor",
-    owner: "Owner",
-    enterCode: "Enter Access Code",
-    codeHint: "Please enter the admin access code to continue.",
-    codePlaceholder: "Enter access code",
-    wrongCode: "Incorrect code",
-    back: "Back",
-    confirm: "Confirm",
-  },
-};
-
 export default function GatePage() {
   const router = useRouter();
-  const [step, setStep] = useState<"choose" | "password">("choose");
+  const [showPassword, setShowPassword] = useState(false);
   const [input, setInput] = useState("");
   const [error, setError] = useState(false);
-  const [lang, setLang] = useState<"zh" | "en">("en");
-
-  useEffect(() => {
-    if (typeof navigator !== "undefined" && navigator.language.startsWith("zh")) {
-      setLang("zh");
-    }
-  }, []);
+  const visitorRef = useRef<HTMLDivElement>(null);
+  const ownerRef = useRef<HTMLDivElement>(null);
 
   const correctCode = process.env.NEXT_PUBLIC_ADMIN_ACCESS_CODE;
-  const locale = lang === "zh" ? "zh" : "en";
-  const text = t[lang];
 
-  function goVisitor() {
-    router.push(`/${locale}`);
+  function triggerConfetti(el: HTMLElement | null) {
+    if (!el) return;
+    const rect = el.getBoundingClientRect();
+    const x = (rect.left + rect.width / 2) / window.innerWidth;
+    const y = (rect.top + rect.height / 2) / window.innerHeight;
+    confetti({
+      particleCount: 80,
+      spread: 120,
+      startVelocity: 45,
+      origin: { x, y },
+      colors: ["#fbfaf7", "#0f766e", "#d97706", "#a16207"],
+    });
   }
 
-  function handleOwnerSubmit(e: React.FormEvent) {
+  function handleVisitor() {
+    triggerConfetti(visitorRef.current);
+    setTimeout(() => router.push("/en"), 350);
+  }
+
+  function handleOwner() {
+    triggerConfetti(ownerRef.current);
+    setTimeout(() => setShowPassword(true), 350);
+  }
+
+  function handlePasswordSubmit(e: React.FormEvent) {
     e.preventDefault();
     if (!correctCode || input.trim() === correctCode) {
       const expires = new Date(
         Date.now() + COOKIE_DAYS * 24 * 60 * 60 * 1000,
       ).toUTCString();
       document.cookie = `${COOKIE_NAME}=1; expires=${expires}; path=/; samesite=lax`;
-      router.push(`/${locale}`);
+      setError(false);
+      triggerConfetti(ownerRef.current);
+      setTimeout(() => router.push("/en"), 350);
     } else {
       setError(true);
     }
   }
 
-  if (step === "password") {
-    return (
-      <div className="flex min-h-screen items-center justify-center bg-background px-4">
-        <div className="w-full max-w-sm rounded-lg border border-border bg-surface p-8 text-center">
-          <h1 className="text-lg font-semibold tracking-tight text-foreground">
-            {text.enterCode}
-          </h1>
-          <p className="mt-2 text-sm text-muted">{text.codeHint}</p>
-          <form onSubmit={handleOwnerSubmit} className="mt-6">
-            <input
-              type="text"
-              value={input}
-              onChange={(e) => {
-                setInput(e.target.value);
-                setError(false);
-              }}
-              placeholder={text.codePlaceholder}
-              autoFocus
-              className="w-full rounded-md border border-border bg-background px-4 py-2.5 text-center text-sm text-foreground placeholder:text-muted focus:border-accent focus:outline-none focus:ring-1 focus:ring-accent"
-            />
-            {error && (
-              <p className="mt-3 text-sm text-accent-strong">{text.wrongCode}</p>
-            )}
-            <div className="mt-4 flex gap-3">
-              <button
-                type="button"
-                onClick={() => {
-                  setStep("choose");
-                  setInput("");
-                  setError(false);
-                }}
-                className="flex-1 rounded-md border border-border bg-surface px-4 py-2.5 text-sm font-medium text-foreground transition hover:border-accent"
-              >
-                {text.back}
-              </button>
-              <button
-                type="submit"
-                className="flex-1 rounded-md bg-foreground px-4 py-2.5 text-sm font-semibold text-background transition hover:bg-accent"
-              >
-                {text.confirm}
-              </button>
-            </div>
-          </form>
-        </div>
-      </div>
-    );
-  }
-
   return (
-    <div className="flex min-h-screen items-center justify-center bg-background px-4">
-      <div className="w-full max-w-sm rounded-lg border border-border bg-surface p-8 text-center">
-        <h1 className="text-xl font-semibold tracking-tight text-foreground">
-          {text.welcome}
-        </h1>
-        <p className="mt-3 text-sm leading-6 text-muted">{text.subtitle}</p>
-        <div className="mt-8 flex gap-4">
-          <button
-            onClick={goVisitor}
-            className="flex-1 rounded-md border border-border bg-surface px-4 py-6 text-sm font-semibold text-foreground transition hover:border-accent hover:text-accent"
-          >
-            <div className="mb-2 text-2xl">🙋</div>
-            {text.visitor}
-          </button>
-          <button
-            onClick={() => setStep("password")}
-            className="flex-1 rounded-md border border-border bg-surface px-4 py-6 text-sm font-semibold text-foreground transition hover:border-accent hover:text-accent"
-          >
-            <div className="mb-2 text-2xl">🔑</div>
-            {text.owner}
-          </button>
-        </div>
+    <div className="relative min-h-screen overflow-hidden bg-background">
+      {/* Blurred homepage background via iframe */}
+      <div className="absolute inset-0 overflow-hidden">
+        <iframe
+          src="/en"
+          title=""
+          className="h-full w-full scale-110 blur-xl opacity-25"
+          style={{ border: "none", pointerEvents: "none" }}
+        />
+        <div className="absolute inset-0 bg-background/60" />
+      </div>
+
+      {/* Gate overlay */}
+      <div className="relative z-10 flex min-h-screen items-center justify-center">
+        {showPassword ? (
+          /* Password modal */
+          <div className="mx-4 w-full max-w-sm">
+            <LiquidGlass
+              mode="prominent"
+              cornerRadius={24}
+              className="px-8 py-10"
+            >
+              <div className="text-center">
+                <h2 className="text-xl font-semibold tracking-tight text-foreground">
+                  Enter Access Code
+                </h2>
+                <p className="mt-2 text-sm text-muted">
+                  Please enter the admin access code to continue.
+                </p>
+                <form onSubmit={handlePasswordSubmit} className="mt-6">
+                  <input
+                    type="text"
+                    value={input}
+                    onChange={(e) => {
+                      setInput(e.target.value);
+                      setError(false);
+                    }}
+                    placeholder="Enter access code"
+                    autoFocus
+                    className="w-full rounded-md border border-border bg-background/60 px-4 py-2.5 text-center text-sm text-foreground placeholder:text-muted focus:border-accent focus:outline-none focus:ring-1 focus:ring-accent"
+                  />
+                  {error && (
+                    <p className="mt-3 text-sm text-accent-strong">
+                      Incorrect code
+                    </p>
+                  )}
+                  <div className="mt-4 flex gap-3">
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setShowPassword(false);
+                        setInput("");
+                        setError(false);
+                      }}
+                      className="flex-1 rounded-md border border-border bg-surface/60 px-4 py-2.5 text-sm font-medium text-foreground transition hover:bg-surface"
+                    >
+                      Back
+                    </button>
+                    <button
+                      type="submit"
+                      className="flex-1 rounded-md bg-foreground px-4 py-2.5 text-sm font-semibold text-background transition hover:bg-accent"
+                    >
+                      Confirm
+                    </button>
+                  </div>
+                </form>
+              </div>
+            </LiquidGlass>
+          </div>
+        ) : (
+          /* Main choice */
+          <div className="mx-4 flex flex-col items-center gap-10 sm:flex-row">
+            <div ref={visitorRef}>
+              <LiquidGlass
+                mode="prominent"
+                cornerRadius={24}
+                className="px-12 py-10"
+                onClick={handleVisitor}
+              >
+                <div className="select-none text-center">
+                  <div className="text-4xl">🙋</div>
+                  <p className="mt-4 text-lg font-semibold tracking-tight text-foreground">
+                    Visitor
+                  </p>
+                  <p className="mt-2 text-sm text-muted">
+                    Continue to homepage
+                  </p>
+                </div>
+              </LiquidGlass>
+            </div>
+
+            <div ref={ownerRef}>
+              <LiquidGlass
+                mode="prominent"
+                cornerRadius={24}
+                className="px-12 py-10"
+                onClick={handleOwner}
+              >
+                <div className="select-none text-center">
+                  <div className="text-4xl">🔑</div>
+                  <p className="mt-4 text-lg font-semibold tracking-tight text-foreground">
+                    Owner
+                  </p>
+                  <p className="mt-2 text-sm text-muted">
+                    Enter admin mode
+                  </p>
+                </div>
+              </LiquidGlass>
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );
