@@ -11,15 +11,18 @@
   "dependencies": {
     "@mdx-js/loader": "^3.1.1",
     "@mdx-js/react": "^3.1.1",
+    "@neondatabase/serverless": "^1.1.0",
     "@next/mdx": "^16.2.4",
     "@tailwindcss/typography": "^0.5.19",
     "@types/mdx": "^2.0.13",
     "lucide-react": "^1.11.0",
     "next": "16.2.4",
+    "next-mdx-remote": "^6.0.0",
     "next-themes": "^0.4.6",
     "react": "19.2.4",
     "react-dom": "19.2.4",
-    "remark-gfm": "^4.0.1"
+    "remark-gfm": "^4.0.1",
+    "typora-web": "^0.3.1"
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4",
