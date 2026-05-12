@@ -43,26 +43,7 @@ export type ResearchProfile = {
 
 export const researchProfiles: Record<Locale, ResearchProfile> = {
   en: {
-    areas: [
-      {
-        title: "Learning systems and research tooling",
-        description:
-          "How computational tools can make research workflows easier to inspect, reproduce, and extend.",
-        keywords: ["research systems", "reproducibility", "tooling"],
-      },
-      {
-        title: "Human-centered intelligent interfaces",
-        description:
-          "Interfaces that help people reason with models, data, and complex technical material.",
-        keywords: ["HCI", "AI interfaces", "evaluation"],
-      },
-      {
-        title: "Applied data-driven methods",
-        description:
-          "Practical modeling, measurement, and analysis for questions that benefit from careful empirical work.",
-        keywords: ["data analysis", "modeling", "experiments"],
-      },
-    ],
+    areas: [],
     projects: [
       {
         title: "GRPO Post-Training for Math Reasoning",
@@ -112,23 +93,7 @@ export const researchProfiles: Record<Locale, ResearchProfile> = {
     ],
   },
   zh: {
-    areas: [
-      {
-        title: "学习系统与研究工具",
-        description: "关注计算工具如何让研究流程更可检查、可复现、可扩展。",
-        keywords: ["研究系统", "可复现性", "工具"],
-      },
-      {
-        title: "以人为中心的智能界面",
-        description: "设计帮助人理解模型、数据与复杂技术材料的交互界面。",
-        keywords: ["人机交互", "AI 界面", "评估"],
-      },
-      {
-        title: "数据驱动方法应用",
-        description: "围绕适合实证工作的具体问题，进行建模、测量与分析。",
-        keywords: ["数据分析", "建模", "实验"],
-      },
-    ],
+    areas: [],
     projects: [
       {
         title: "GRPO 数学推理后训练",
