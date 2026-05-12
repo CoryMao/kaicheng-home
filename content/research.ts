@@ -69,28 +69,8 @@ export const researchProfiles: Record<Locale, ResearchProfile> = {
         tags: ["writing", "workflow", "research practice"],
       },
     ],
-    publications: [
-      {
-        title: "Replace with publication title",
-        venue: "Conference / Journal / Workshop",
-        year: "YYYY",
-        authors: "Kaicheng Mao, Collaborators",
-        links: [
-          { label: "Paper", href: "#" },
-          { label: "Code", href: "#" },
-        ],
-        highlighted: true,
-      },
-    ],
-    activities: [
-      {
-        title: "Replace with invited talk or presentation",
-        organization: "Lab / seminar / reading group",
-        date: "YYYY",
-        description:
-          "Use this section for talks, posters, teaching, mentoring, or academic service.",
-      },
-    ],
+    publications: [],
+    activities: [],
   },
   zh: {
     areas: [],
@@ -118,26 +98,7 @@ export const researchProfiles: Record<Locale, ResearchProfile> = {
         tags: ["写作", "工作流", "研究实践"],
       },
     ],
-    publications: [
-      {
-        title: "替换为论文标题",
-        venue: "会议 / 期刊 / Workshop",
-        year: "YYYY",
-        authors: "Kaicheng Mao, Collaborators",
-        links: [
-          { label: "论文", href: "#" },
-          { label: "代码", href: "#" },
-        ],
-        highlighted: true,
-      },
-    ],
-    activities: [
-      {
-        title: "替换为报告或展示",
-        organization: "实验室 / 研讨会 / 读书会",
-        date: "YYYY",
-        description: "这里可以放报告、海报、教学、mentoring 或学术服务。",
-      },
-    ],
+    publications: [],
+    activities: [],
   },
 };
