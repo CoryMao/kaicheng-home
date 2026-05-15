@@ -107,14 +107,14 @@ export const profiles: Record<Locale, Profile> = {
         organization: "Deep Learning for Precipitation Nowcasting",
         time: "Feb. 2026 - Present",
         detail:
-          "Enhanced the SEVIR dataset with NASADEM-derived elevation, slope, aspect, and land-sea information, and built geospatial preprocessing foundations for terrain-aware precipitation nowcasting experiments.",
+          "Enhanced the SEVIR dataset with NASADEM-derived elevation, slope, aspect, and land-sea information, and built geospatial preprocessing foundations for terrain-aware precipitation nowcasting experiments. Developed a Cross-Attention and FiLM-based UNet that fuses elevation, radar, and infrared multi-source data for more comprehensive precipitation nowcasting.",
       },
       {
         role: "LLM Fine-tuning Project",
         organization: "Fine-tuning Qwen3-0.6B-Base on Nemotron-CC-Math",
         time: "Mar. 2026 - May 2026",
         detail:
-          "Fine-tuned Qwen3-0.6B-Base for mathematical domain adaptation and designed a self-contained data cleaning pipeline using regular expressions and Qwen3 itself, without teacher models, tool-calling, search, or external tools.",
+          "Fine-tuned Qwen3-0.6B-Base for mathematical domain adaptation and designed a self-contained data cleaning pipeline using regular expressions and Qwen3 itself, without teacher models, tool-calling, search, or external tools. Designed reward functions targeting Weird Token generation and Critical Thinking deficiency, then applied GRPO to improve accuracy from a 40.2% baseline to 56.1%, validating the core idea of the 2025 NeurIPS paper \"Does Reinforcement Learning Really Incentivize Reasoning Capacity in LLMs Beyond the Base Model?\"",
       },
       {
         role: "Image Segmentation Project",
@@ -266,14 +266,14 @@ export const profiles: Record<Locale, Profile> = {
         organization: "Deep Learning for Precipitation Nowcasting",
         time: "2026.02 - 至今",
         detail:
-          "基于 NASADEM 为 SEVIR 数据集补充高程、坡度、坡向和海陆信息，构建地理空间预处理流程，并整理 terrain-aware auxiliary inputs，支持后续短临降水预报实验。",
+          "基于 NASADEM 为 SEVIR 数据集补充高程、坡度、坡向和海陆信息，构建地理空间预处理流程，并整理 terrain-aware auxiliary inputs，支持后续短临降水预报实验。通过基于 Cross-Attention 和 FiLM 的 UNet 网络，在高程、雷达、红外等多源数据上进行融合，实现更加全面的临近降雨预测。",
       },
       {
         role: "LLM 微调项目",
         organization: "Fine-tuning Qwen3-0.6B-Base on Nemotron-CC-Math",
         time: "2026.03 - 2026.05",
         detail:
-          "在 Nemotron-CC-Math 上微调 Qwen3-0.6B-Base，用于数学领域适配；设计仅使用正则表达式和 Qwen3 本身的数据清洗流程，不依赖 teacher model、tool-calling、search 或外部工具。",
+          "在 Nemotron-CC-Math 上微调 Qwen3-0.6B-Base，用于数学领域适配；设计仅使用正则表达式和 Qwen3 本身的数据清洗流程，不依赖 teacher model、tool-calling、search 或外部工具。通过针对 Weird Token 和 Critical Thinking 缺失问题设计 Reward 进行 GRPO，模型准确率从 baseline 的 40.2% 提升至 56.1%，验证了 2025 NeurIPS 满分论文 \"Does Reinforcement Learning Really Incentivize Reasoning Capacity in LLMs Beyond the Base Model?\" 的核心思想。",
       },
       {
         role: "图像分割项目",
