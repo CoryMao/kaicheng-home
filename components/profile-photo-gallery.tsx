@@ -26,23 +26,23 @@ export function ProfilePhotoGallery({
 
   return (
     <div>
-      <div className="relative aspect-[3/4] max-w-[280px] overflow-hidden rounded-lg border border-border bg-surface-alt">
+      <div className="relative aspect-[3/4] w-full overflow-hidden rounded-sm bg-surface-alt">
         <Image
           src={activePhoto.src}
           alt={activePhoto.alt}
           fill
-          priority
-          sizes="(max-width: 1024px) 50vw, 280px"
+          loading="eager"
+          sizes="(max-width: 640px) 128px, 160px"
           className="object-cover"
         />
       </div>
-      <div className="mt-3 flex justify-start gap-2 max-w-[280px]">
+      <div className="mt-2 flex justify-start gap-2 w-full">
         {photos.map((photo, index) => (
           <button
             key={photo.src}
             type="button"
             className={cn(
-              "relative size-10 overflow-hidden rounded-md border bg-surface transition",
+              "relative size-7 overflow-hidden rounded-sm border bg-surface transition",
               index === activeIndex
                 ? "border-accent ring-2 ring-accent/25"
                 : "border-border hover:border-accent",
@@ -55,7 +55,7 @@ export function ProfilePhotoGallery({
               src={photo.src}
               alt=""
               fill
-              sizes="48px"
+              sizes="28px"
               className="object-cover"
             />
           </button>

@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
 
-import { BgOpacityControl } from "@/components/bg-opacity-control";
 import { SiteFooter } from "@/components/site-footer";
 import { SiteHeader } from "@/components/site-header";
 import { ThemeProvider } from "@/components/theme-provider";
@@ -69,12 +68,11 @@ export default async function LocaleLayout({
 
   return (
     <ThemeProvider>
-      <div className="flex min-h-screen flex-col">
+      <div lang={htmlLang[locale]} className="public-site flex min-h-screen flex-col">
         <SiteHeader locale={locale} labels={dictionary.navigation} />
         <main className="flex-1">{children}</main>
         <SiteFooter locale={locale} labels={dictionary.footer} />
       </div>
-      <BgOpacityControl />
     </ThemeProvider>
   );
 }

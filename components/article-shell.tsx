@@ -22,12 +22,12 @@ export function ArticleShell({
   children: React.ReactNode;
 }) {
   return (
-    <article className="mx-auto w-full max-w-3xl px-4 py-12 sm:px-6 lg:px-8">
+    <article className="mx-auto w-full max-w-[820px] px-6 py-12 sm:px-10 sm:py-16">
       {adminBackHref ? (
         <div className="mb-6 rounded-lg border border-accent/30 bg-accent/5 px-4 py-2.5">
           <Link
             href={adminBackHref}
-            className="inline-flex items-center gap-2 text-sm font-medium text-accent transition hover:text-foreground"
+            className="inline-flex items-center gap-2 text-[15px] font-medium text-accent transition hover:text-foreground"
           >
             <ArrowLeft aria-hidden="true" className="size-4" />
             返回管理后台
@@ -37,14 +37,14 @@ export function ArticleShell({
 
       <Link
         href={backHref}
-        className="inline-flex items-center gap-2 text-sm font-semibold text-accent transition hover:text-foreground"
+        className="inline-flex items-center gap-2 text-[15px] font-semibold text-accent transition hover:text-foreground"
       >
         <ArrowLeft aria-hidden="true" className="size-4" />
         {backLabel}
       </Link>
 
       <header className="mt-8">
-        <div className="flex flex-wrap items-center gap-2 text-sm text-muted">
+        <div className="flex flex-wrap items-center gap-2 text-[15px] text-muted">
           <time dateTime={article.metadata.date}>
             {formatDate(article.metadata.date, locale)}
           </time>
@@ -57,17 +57,17 @@ export function ArticleShell({
             <span>{article.metadata.location}</span>
           ) : null}
         </div>
-        <h1 className="mt-4 text-4xl font-semibold tracking-tight text-foreground sm:text-5xl">
+        <h1 className="mt-4 text-[15px] font-medium leading-tight tracking-tight text-foreground ">
           {article.metadata.title}
         </h1>
-        <p className="mt-5 text-lg leading-8 text-muted">
+        <p className="mt-5 text-[15px] leading-7 text-muted">
           {article.metadata.summary}
         </p>
         <div className="mt-6 flex flex-wrap gap-2">
           {article.metadata.tags.map((tag) => (
             <span
               key={tag}
-              className="rounded-md border border-border bg-surface px-2.5 py-1 text-xs font-medium text-muted"
+              className="py-1 text-[15px] font-medium text-muted"
             >
               {tag}
             </span>
@@ -83,7 +83,7 @@ export function ArticleShell({
             fill
             sizes="(max-width: 768px) 100vw, 768px"
             className="object-cover"
-            priority
+            preload
           />
         </div>
       ) : null}

@@ -11,11 +11,5 @@ export function switchLocalePath(pathname: string, targetLocale: Locale) {
       : `/${targetLocale}/blog`;
   }
 
-  if (section === "life" && slug) {
-    return hasArticleSlug("life", targetLocale, slug)
-      ? `/${targetLocale}/life/${slug}`
-      : `/${targetLocale}/life`;
-  }
-
   return `/${targetLocale}${section ? `/${parts.slice(1).join("/")}` : ""}`;
 }

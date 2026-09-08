@@ -54,10 +54,10 @@ export const profiles: Record<Locale, Profile> = {
       "I am a Data Science undergraduate interested in deep learning, generative models, LLM post-training, and multi-source data processing.",
     longBio:
       "I am a Data Science undergraduate at Southern University of Science and Technology. My project experience spans precipitation nowcasting, Qwen3-0.6B-Base fine-tuning, and interactive image segmentation, with hands-on work in data cleaning, model experimentation, geospatial preprocessing, and algorithm implementation. Outside research and engineering, I am active in varsity volleyball and student leadership.",
-    portrait: "/media/profile/image.png",
+    portrait: "/media/profile/profile-outdoors.jpg",
     portraits: [
       {
-        src: "/media/profile/image.png",
+        src: "/media/profile/profile-outdoors.jpg",
         alt: "Kaicheng Mao portrait",
       },
       {
@@ -69,8 +69,8 @@ export const profiles: Record<Locale, Profile> = {
         alt: "Kaicheng Mao portrait alternate 2",
       },
       {
-        src: "/media/profile/profile-4.jpg",
-        alt: "Kaicheng Mao portrait alternate 3",
+        src: "/media/profile/profile-weightlifting.png",
+        alt: "Kaicheng Mao weightlifting",
       },
     ],
     email: siteConfig.email,
@@ -213,10 +213,10 @@ export const profiles: Record<Locale, Profile> = {
       "我是一名数据科学本科生，关注深度学习、生成式模型、LLM 后训练与多源数据处理。",
     longBio:
       "我目前就读于南方科技大学数据科学专业。项目经历有: precipitation nowcasting、Qwen3-0.6B-Base 微调和交互式图像分割，具备数据清洗、模型实验、地理空间预处理与算法实现经验。同时长期参与校队训练与社团管理，具备团队协作和组织领导经验。",
-    portrait: "/media/profile/image.png",
+    portrait: "/media/profile/profile-outdoors.jpg",
     portraits: [
       {
-        src: "/media/profile/image.png",
+        src: "/media/profile/profile-outdoors.jpg",
         alt: "毛恺诚头像",
       },
       {
@@ -228,8 +228,8 @@ export const profiles: Record<Locale, Profile> = {
         alt: "毛恺诚头像备选 2",
       },
       {
-        src: "/media/profile/profile-4.jpg",
-        alt: "毛恺诚头像备选 3",
+        src: "/media/profile/profile-weightlifting.png",
+        alt: "毛恺诚举重训练",
       },
     ],
     email: siteConfig.email,

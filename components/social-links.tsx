@@ -53,18 +53,18 @@ export function SocialLinks({
             aria-label={link.label}
             title={link.label}
             className={cn(
-              "inline-flex items-center justify-center rounded-md border border-border bg-surface font-semibold text-muted transition hover:border-accent hover:text-accent",
-              showLabels ? "h-10 gap-2 px-3 text-sm" : "size-10",
+              "inline-flex items-center justify-center rounded-sm text-muted opacity-75 transition hover:opacity-100",
+              showLabels ? "h-10 gap-2 px-3 text-[15px]" : "size-10",
             )}
           >
             <Image
               src={icon.src}
               alt=""
-              width={18}
-              height={18}
+              width={20}
+              height={20}
               aria-hidden="true"
               unoptimized
-              className={cn("size-4", icon.invertInDark && "dark:invert")}
+              className={cn("size-5", icon.invertInDark && "dark:invert")}
             />
             {showLabels ? <span>{link.label}</span> : null}
           </a>

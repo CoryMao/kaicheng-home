@@ -12,7 +12,7 @@ export function LanguageSwitcher({ currentLocale }: { currentLocale: Locale }) {
 
   return (
     <div
-      className="inline-flex h-10 items-center rounded-md border border-border bg-surface p-1 text-sm font-medium"
+      className="inline-flex h-10 items-center p-1 text-[15px] font-medium"
       aria-label="Language switcher"
     >
       {locales.map((locale) => (
@@ -20,9 +20,9 @@ export function LanguageSwitcher({ currentLocale }: { currentLocale: Locale }) {
           key={locale}
           href={switchLocalePath(pathname, locale)}
           className={cn(
-            "flex h-8 min-w-9 items-center justify-center rounded px-2 transition",
+            "flex h-8 min-w-7 items-center justify-center px-1 transition",
             locale === currentLocale
-              ? "bg-foreground text-background"
+              ? "text-foreground underline underline-offset-4"
               : "text-muted hover:text-foreground",
           )}
           aria-current={locale === currentLocale ? "page" : undefined}

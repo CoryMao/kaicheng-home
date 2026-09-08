@@ -66,7 +66,7 @@ export const dictionaries = {
       contact: "Contact",
     },
     footer: {
-      note: "Built with Next.js, MDX, and a file-driven content workflow.",
+      note: "Kaicheng Mao",
     },
   },
   zh: {
@@ -130,7 +130,7 @@ export const dictionaries = {
       contact: "联系方式",
     },
     footer: {
-      note: "使用 Next.js、MDX 与文件驱动内容工作流构建。",
+      note: "毛恺诚 · Kaicheng Mao",
     },
   },
 } as const;

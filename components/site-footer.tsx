@@ -1,6 +1,4 @@
-import Link from "next/link";
-
-import { SocialLinks } from "@/components/social-links";
+import { Mail } from "lucide-react";
 import { profiles } from "@/content/profile";
 import type { Locale } from "@/lib/i18n";
 import { siteConfig } from "@/lib/site";
@@ -19,17 +17,14 @@ export function SiteFooter({
   const profile = profiles[locale];
 
   return (
-    <footer className="border-t border-border bg-surface/60">
-      <div className="mx-auto flex w-full max-w-6xl flex-col gap-4 px-4 py-8 text-sm text-muted sm:px-6 md:flex-row md:items-center md:justify-between lg:px-8">
+    <footer>
+      <div className="mx-auto flex w-full max-w-[900px] flex-col gap-4 border-t border-border px-6 py-7 text-[15px] text-muted sm:px-10 md:flex-row md:items-center md:justify-between">
         <p>{labels.note}</p>
         <div className="flex flex-wrap items-center gap-3">
-          <Link href={`/${locale}/cv`} className="hover:text-foreground">
-            CV
-          </Link>
-          <a href={`mailto:${siteConfig.email}`} className="hover:text-foreground">
-            Email
+          <a href={`mailto:${siteConfig.email}`} aria-label="Email" title={siteConfig.email} className="inline-flex size-10 items-center justify-center hover:text-foreground">
+            <Mail aria-hidden="true" className="size-5" />
           </a>
-          <SocialLinks links={profile.links} />
+          <span>{profile.location}</span>
         </div>
       </div>
     </footer>

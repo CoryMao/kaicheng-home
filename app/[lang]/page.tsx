@@ -1,184 +1,89 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { ArrowRight, FileText, Mail, MapPin } from "lucide-react";
+import { ArrowUpRight, Mail } from "lucide-react";
 
-import { LiquidGlass } from "@/components/liquid-glass";
-import { ArticleCard } from "@/components/article-card";
-import { ProfilePhotoGallery } from "@/components/profile-photo-gallery";
-import { SectionHeading } from "@/components/section-heading";
 import { SocialLinks } from "@/components/social-links";
+import { ProfilePhotoGallery } from "@/components/profile-photo-gallery";
 import { profiles } from "@/content/profile";
-import { researchProfiles } from "@/content/research";
 import { getArticles } from "@/lib/content";
 import { getDictionary } from "@/lib/dictionaries";
 import { requireLocale } from "@/lib/locale";
 import { createPageMetadata } from "@/lib/metadata";
-import { getCvPath } from "@/lib/site";
+import { formatDate } from "@/lib/utils";
 
-type PageProps = {
-  params: Promise<{ lang: string }>;
-};
+type PageProps = { params: Promise<{ lang: string }> };
 
-export async function generateMetadata({
-  params,
-}: PageProps): Promise<Metadata> {
-  const { lang: rawLang } = await params;
-  const locale = requireLocale(rawLang);
+export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
+  const { lang } = await params;
+  const locale = requireLocale(lang);
   const profile = profiles[locale];
-
-  return createPageMetadata({
-    locale,
-    title: profile.name,
-    description: profile.shortBio,
-  });
+  return createPageMetadata({ locale, title: profile.name, description: profile.shortBio });
 }
 
 export default async function HomePage({ params }: PageProps) {
-  const { lang: rawLang } = await params;
-  const locale = requireLocale(rawLang);
+  const { lang } = await params;
+  const locale = requireLocale(lang);
   const profile = profiles[locale];
-  const research = researchProfiles[locale];
   const dictionary = getDictionary(locale);
-  const blogPosts = (await getArticles("blog", locale)).slice(0, 2);
-  const lifeNotes = (await getArticles("life", locale)).slice(0, 2);
-  const cvPath = getCvPath(locale);
+  const blogPosts = await getArticles("blog", locale);
+  const zh = locale === "zh";
 
   return (
-    <div className="mx-auto w-full max-w-6xl px-4 py-10 sm:px-6 sm:py-14 lg:px-8">
-      <section className="grid gap-10 lg:grid-cols-[0.8fr_1.2fr] lg:items-start">
+    <div className="mx-auto w-full max-w-[900px] px-6 pb-20 pt-12 sm:px-10 sm:pt-20">
+      <section className="grid items-start gap-8 sm:grid-cols-[1fr_160px] sm:gap-14" aria-labelledby="intro-title">
         <div>
-          <ProfilePhotoGallery photos={profile.portraits} name={profile.name} />
-          <LiquidGlass cornerRadius={12} blurAmount={10} className="mt-4 p-4">
-            <p className="text-sm font-semibold text-foreground">
-              {profile.status}
-            </p>
-            <p className="mt-2 text-sm leading-6 text-muted">
-              {profile.shortBio}
-            </p>
-          </LiquidGlass>
-        </div>
-
-        <div>
-          <p className="text-xs font-semibold uppercase tracking-[0.2em] text-accent">
-            {dictionary.home.eyebrow}
-          </p>
-          <h1 className="mt-5 max-w-3xl text-4xl font-semibold tracking-tight text-foreground sm:text-6xl">
-            {profile.headline}
+          <h1 id="intro-title" className="font-medium text-[15px] leading-7">
+            {profile.name}
           </h1>
-          <p className="mt-6 max-w-2xl text-lg leading-8 text-muted">
-            {dictionary.home.intro}
+          <p className="mt-3 text-[15px] text-muted">
+            {zh ? "数据科学本科生 @ " : "Data Science undergrad @ "}
+            <a href="https://www.sustech.edu.cn/" target="_blank" rel="noreferrer" className="text-link">{zh ? "南方科技大学" : "SUSTech"}</a>
           </p>
-          <div className="mt-8 flex flex-col gap-3 text-sm text-muted sm:flex-row sm:flex-wrap">
-            <span className="inline-flex items-center gap-2">
-              <MapPin aria-hidden="true" className="size-4 text-accent" />
-              {profile.location}
-            </span>
-            <a
-              href={`mailto:${profile.email}`}
-              className="inline-flex items-center gap-2 transition hover:text-foreground"
-            >
-              <Mail aria-hidden="true" className="size-4 text-accent" />
-              {profile.email}
-            </a>
+          <div className="mt-7 max-w-[540px] space-y-4 text-[15px] leading-7">
+            <p>{zh
+              ? "我的研究兴趣包括 LLM 后训练和生成式模型。"
+              : "My research interests include LLM post-training and generative models."}</p>
+            <p>{zh
+              ? "我热爱排球和奥林匹克举重，欢迎找我一起打球或者一起训练！"
+              : "I love volleyball and Olympic weightlifting. Always happy to have someone to play or train with!"}</p>
+            <p>{zh
+              ? "其实还挺不好意思的，我是个土生土长的中国人，但我很喜欢 Panda Express。"
+              : "Fun fact: I am a born-and-raised Chinese person and I actually love Panda Express."}</p>
           </div>
-          <div className="mt-8 flex flex-wrap gap-3">
-            <Link
-              href={`/${locale}/research`}
-              className="inline-flex items-center gap-2 rounded-md bg-foreground px-4 py-2 text-sm font-semibold text-background transition hover:bg-accent"
-            >
-              {dictionary.home.researchCta}
-              <ArrowRight aria-hidden="true" className="size-4" />
-            </Link>
-            <Link
-              href={`/${locale}/blog`}
-              className="inline-flex items-center gap-2 rounded-md border border-border bg-surface px-4 py-2 text-sm font-semibold text-foreground transition hover:border-accent hover:text-accent"
-            >
-              {dictionary.home.blogCta}
-            </Link>
-            <a
-              href={cvPath}
-              className="inline-flex items-center gap-2 rounded-md border border-border bg-surface px-4 py-2 text-sm font-semibold text-foreground transition hover:border-accent hover:text-accent"
-            >
-              <FileText aria-hidden="true" className="size-4" />
-              CV
+          <div className="mt-6 flex items-center gap-2">
+            <a href={`mailto:${profile.email}`} aria-label="Email" title={profile.email} className="inline-flex size-10 items-center justify-center text-muted transition hover:text-foreground">
+              <Mail aria-hidden="true" className="size-5" />
             </a>
+            <SocialLinks links={profile.links} />
           </div>
-          <SocialLinks links={profile.links} className="mt-5" />
+        </div>
+        <div className="row-start-1 w-32 sm:col-start-2 sm:w-40 sm:pt-2">
+          <ProfilePhotoGallery photos={profile.portraits} name={profile.name} />
+          <p className="mt-3 text-[15px] text-muted">{profile.location}</p>
         </div>
       </section>
 
-      <section className="mt-16">
-        <SectionHeading
-          title={dictionary.common.selectedResearch}
-          description={research.areas[0]?.description}
-          actionHref={`/${locale}/research`}
-          actionLabel={dictionary.common.viewAll}
-        />
-        <div className="mt-8 grid gap-4 md:grid-cols-3">
-          {research.areas.map((area) => (
-            <div
-              key={area.title}
-              className="rounded-lg border border-border bg-surface p-5"
-            >
-              <h3 className="text-lg font-semibold text-foreground">
-                {area.title}
-              </h3>
-              <p className="mt-3 text-sm leading-6 text-muted">
-                {area.description}
-              </p>
-              <div className="mt-4 flex flex-wrap gap-2">
-                {area.keywords.map((keyword) => (
-                  <span
-                    key={keyword}
-                    className="rounded-md bg-surface-alt px-2 py-1 text-xs font-medium text-muted"
-                  >
-                    {keyword}
-                  </span>
-                ))}
-              </div>
-            </div>
-          ))}
-        </div>
-      </section>
-
-      <section className="mt-16 grid gap-10 lg:grid-cols-2">
-        <div>
-          <SectionHeading
-            title={dictionary.common.latestWriting}
-            actionHref={`/${locale}/blog`}
-            actionLabel={dictionary.common.viewAll}
-          />
-          <div className="mt-6 grid gap-4">
-            {blogPosts.map((post) => (
-              <ArticleCard
-                key={post.slug}
-                article={post}
-                href={`/${locale}/blog/${post.slug}`}
-                locale={locale}
-                compact
-              />
+      {[
+        { kind: "blog", title: zh ? "写作" : "Writing", posts: blogPosts },
+      ].filter((section) => section.posts.length > 0).map((section) => (
+        <section key={section.kind} className="mt-16 grid gap-5 border-t border-border pt-7 sm:grid-cols-[130px_1fr] sm:gap-8" aria-labelledby={`${section.kind}-title`}>
+          <div>
+            <h2 id={`${section.kind}-title`} className="text-[15px] font-medium">{section.title}</h2>
+            <Link href={`/${locale}/${section.kind}`} className="mt-2 inline-block text-[15px] text-muted hover:text-accent">{dictionary.common.viewAll} <span aria-hidden="true">↗</span></Link>
+          </div>
+          <div className="space-y-6">
+            {section.posts.slice(0, 3).map((post) => (
+              <Link key={post.slug} href={`/${locale}/${section.kind}/${post.slug}`} className="group block">
+                <div className="flex items-start justify-between gap-4">
+                  <h3 className="text-[15px] font-medium leading-6 group-hover:text-accent">{post.metadata.title}</h3>
+                  <ArrowUpRight aria-hidden="true" className="mt-1 size-3.5 shrink-0 text-muted group-hover:text-accent" />
+                </div>
+                <time dateTime={post.metadata.date} className="mt-1.5 block text-[15px] text-muted">{formatDate(post.metadata.date, locale)}</time>
+              </Link>
             ))}
           </div>
-        </div>
-        <div>
-          <SectionHeading
-            title={dictionary.common.lifeNotes}
-            actionHref={`/${locale}/life`}
-            actionLabel={dictionary.home.lifeCta}
-          />
-          <div className="mt-6 grid gap-4">
-            {lifeNotes.map((note) => (
-              <ArticleCard
-                key={note.slug}
-                article={note}
-                href={`/${locale}/life/${note.slug}`}
-                locale={locale}
-                compact
-              />
-            ))}
-          </div>
-        </div>
-      </section>
+        </section>
+      ))}
     </div>
   );
 }

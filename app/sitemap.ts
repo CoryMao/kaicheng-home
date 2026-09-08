@@ -6,14 +6,14 @@ import { absoluteUrl } from "@/lib/utils";
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const staticRoutes = locales.flatMap((locale) =>
-    ["", "/research", "/blog", "/life", "/cv"].map((path) => ({
+    ["", "/blog"].map((path) => ({
       url: absoluteUrl(siteConfig.url, `/${locale}${path}`),
       lastModified: new Date(),
       changeFrequency: "monthly" as const,
       priority: path === "" ? 1 : 0.8,
     })),
   );
-  const contentRoutes = (await getAllArticles()).map((article) => ({
+  const contentRoutes = (await getAllArticles("blog")).map((article) => ({
     url: absoluteUrl(siteConfig.url, `/${article.locale}/${article.kind}/${article.slug}`),
     lastModified: new Date(article.metadata.date),
     changeFrequency: "monthly" as const,
