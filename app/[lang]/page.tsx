@@ -47,7 +47,7 @@ export default async function HomePage({ params }: PageProps) {
               ? "我热爱排球和奥林匹克举重，欢迎找我一起打球或者一起训练！"
               : "I love volleyball and Olympic weightlifting. Always happy to have someone to play or train with!"}</p>
             <p>{zh
-              ? "其实还挺不好意思的，我是个土生土长的中国人，但我很喜欢 Panda Express。"
+              ? "我可能是个异端，虽然是个老中，但是我莫名其妙很爱吃 Panda Express。"
               : "Fun fact: I am a born-and-raised Chinese person and I actually love Panda Express."}</p>
           </div>
           <div className="mt-6 flex items-center gap-2">
