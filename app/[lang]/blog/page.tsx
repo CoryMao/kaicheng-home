@@ -25,7 +25,6 @@ export default async function BlogPage({ params }: PageProps) {
   return (
     <div className="mx-auto w-full max-w-[900px] px-6 pb-20 pt-12 sm:px-10 sm:pt-20">
       <h1 className="font-medium text-[15px] tracking-tight ">Blog<span className="text-accent">.</span></h1>
-      <p className="mt-5 text-[15px] leading-7 text-muted">{locale === "zh" ? "写下实验过程、读过的东西，以及还没想明白的问题。" : "Experiments, things I've read, and questions I'm still working through."}</p>
       {posts.length ? (
         <div className="mt-12 space-y-10">
           {years.map((year) => (
