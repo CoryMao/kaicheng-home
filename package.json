@@ -16,13 +16,16 @@
     "@tailwindcss/typography": "^0.5.19",
     "@types/mdx": "^2.0.13",
     "canvas-confetti": "^1.9.4",
+    "katex": "^0.18.7",
     "liquid-glass-react": "^1.1.1",
     "lucide-react": "^1.11.0",
     "next": "16.2.4",
     "next-mdx-remote": "^6.0.0",
     "react": "19.2.4",
     "react-dom": "19.2.4",
+    "rehype-katex": "^7.0.1",
     "remark-gfm": "^4.0.1",
+    "remark-math": "^6.0.0",
     "typora-web": "^0.3.1"
   },
   "devDependencies": {
