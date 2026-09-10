@@ -24,7 +24,9 @@
   --color-accent: var(--accent);
   --color-accent-strong: var(--accent-strong);
   --color-accent-warm: var(--accent-warm);
-  --font-sans: var(--font-geist-sans);
+  /* Apple system stack: SF Pro for Latin, PingFang SC for Chinese, with
+     Windows and Linux equivalents behind them. */
+  --font-sans: system-ui, -apple-system, "Segoe UI", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "Noto Sans SC", sans-serif;
   --font-mono: var(--font-geist-mono);
 }
 
@@ -44,7 +46,7 @@ body {
   isolation: isolate;
   background: var(--background);
   color: var(--foreground);
-  font-family: var(--font-geist-sans), Arial, Helvetica, sans-serif;
+  font-family: var(--font-sans);
 }
 
 .no-transition * {
@@ -87,3 +89,37 @@ a {
 .public-site .prose :where(h1, h2, h3, h4, h5, h6, p, li, a, blockquote, code, pre, table, th, td, figcaption) {
   font-size: 0.9375rem;
 }
+
+/* Apple-style continuous corners (squircle) for the portrait photos.
+   Chrome and Edge shape these natively through corner-shape; Safari and
+   Firefox do not ship it yet, so they get an equivalent superellipse mask
+   instead of falling back to a plain circular corner. */
+.apple-corner,
+.apple-corner-frame {
+  border-radius: var(--apple-corner-radius, 20px);
+  corner-shape: squircle;
+}
+
+.apple-corner-lg {
+  --apple-corner-radius: 20px;
+  --apple-corner-mask: url("data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20100%20100'%20preserveAspectRatio='none'%3E%3Cpath%20d='M12.5,0L87.5,0L92.437,0.024L94.001,0.097L95.121,0.218L96.012,0.39L96.753,0.613L97.381,0.89L97.92,1.223L98.382,1.618L98.777,2.08L99.11,2.619L99.387,3.247L99.61,3.988L99.782,4.879L99.903,5.999L99.976,7.563L100,12.5L100,87.5L99.976,92.437L99.903,94.001L99.782,95.121L99.61,96.012L99.387,96.753L99.11,97.381L98.777,97.92L98.382,98.382L97.92,98.777L97.381,99.11L96.753,99.387L96.012,99.61L95.121,99.782L94.001,99.903L92.437,99.976L87.5,100L12.5,100L7.563,99.976L5.999,99.903L4.879,99.782L3.988,99.61L3.247,99.387L2.619,99.11L2.08,98.777L1.618,98.382L1.223,97.92L0.89,97.381L0.613,96.753L0.39,96.012L0.218,95.121L0.097,94.001L0.024,92.437L0,87.5L0,12.5L0.024,7.563L0.097,5.999L0.218,4.879L0.39,3.988L0.613,3.247L0.89,2.619L1.223,2.08L1.618,1.618L2.08,1.223L2.619,0.89L3.247,0.613L3.988,0.39L4.879,0.218L5.999,0.097L7.563,0.024L12.5,0Z'%20fill='black'/%3E%3C/svg%3E");
+}
+
+.apple-corner-sm {
+  --apple-corner-radius: 8px;
+  --apple-corner-mask: url("data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20100%20100'%20preserveAspectRatio='none'%3E%3Cpath%20d='M28,0L72,0L83.058,0.054L86.563,0.216L89.072,0.489L91.068,0.873L92.726,1.373L94.134,1.993L95.34,2.74L96.375,3.625L97.26,4.66L98.007,5.866L98.627,7.274L99.127,8.932L99.511,10.928L99.784,13.437L99.946,16.942L100,28L100,72L99.946,83.058L99.784,86.563L99.511,89.072L99.127,91.068L98.627,92.726L98.007,94.134L97.26,95.34L96.375,96.375L95.34,97.26L94.134,98.007L92.726,98.627L91.068,99.127L89.072,99.511L86.563,99.784L83.058,99.946L72,100L28,100L16.942,99.946L13.437,99.784L10.928,99.511L8.932,99.127L7.274,98.627L5.866,98.007L4.66,97.26L3.625,96.375L2.74,95.34L1.993,94.134L1.373,92.726L0.873,91.068L0.489,89.072L0.216,86.563L0.054,83.058L0,72L0,28L0.054,16.942L0.216,13.437L0.489,10.928L0.873,8.932L1.373,7.274L1.993,5.866L2.74,4.66L3.625,3.625L4.66,2.74L5.866,1.993L7.274,1.373L8.932,0.873L10.928,0.489L13.437,0.216L16.942,0.054L28,0Z'%20fill='black'/%3E%3C/svg%3E");
+}
+
+@supports not (corner-shape: squircle) {
+  /* Only the clipped photo boxes are masked; the thumbnail buttons paint a
+     border and a focus ring outside their box, which a mask would cut off. */
+  .apple-corner {
+    -webkit-mask-image: var(--apple-corner-mask);
+    mask-image: var(--apple-corner-mask);
+    -webkit-mask-size: 100% 100%;
+    mask-size: 100% 100%;
+    -webkit-mask-repeat: no-repeat;
+    mask-repeat: no-repeat;
+  }
+}
+

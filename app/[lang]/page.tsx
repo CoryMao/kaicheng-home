@@ -30,7 +30,7 @@ export default async function HomePage({ params }: PageProps) {
 
   return (
     <div className="mx-auto w-full max-w-[900px] px-6 pb-20 pt-12 sm:px-10 sm:pt-20">
-      <section className="grid items-start gap-8 sm:grid-cols-[1fr_160px] sm:gap-14" aria-labelledby="intro-title">
+      <section className="grid items-start gap-8 sm:grid-cols-[1fr_192px] sm:gap-14" aria-labelledby="intro-title">
         <div>
           <h1 id="intro-title" className="font-medium text-[15px] leading-7">
             {profile.name}
@@ -57,7 +57,7 @@ export default async function HomePage({ params }: PageProps) {
             <SocialLinks links={profile.links} />
           </div>
         </div>
-        <div className="row-start-1 w-32 sm:col-start-2 sm:w-40 sm:pt-2">
+        <div className="row-start-1 w-36 sm:col-start-2 sm:w-48 sm:pt-2">
           <ProfilePhotoGallery photos={profile.portraits} name={profile.name} />
           <p className="mt-3 text-[15px] text-muted">{profile.location}</p>
         </div>

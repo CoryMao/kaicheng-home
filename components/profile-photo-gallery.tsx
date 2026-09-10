@@ -26,13 +26,13 @@ export function ProfilePhotoGallery({
 
   return (
     <div>
-      <div className="relative aspect-[3/4] w-full overflow-hidden rounded-sm bg-surface-alt">
+      <div className="apple-corner apple-corner-lg relative aspect-[3/4] w-full overflow-hidden bg-surface-alt">
         <Image
           src={activePhoto.src}
           alt={activePhoto.alt}
           fill
           loading="eager"
-          sizes="(max-width: 640px) 128px, 160px"
+          sizes="(max-width: 640px) 144px, 192px"
           className="object-cover"
         />
       </div>
@@ -42,7 +42,7 @@ export function ProfilePhotoGallery({
             key={photo.src}
             type="button"
             className={cn(
-              "relative size-7 overflow-hidden rounded-sm border bg-surface transition",
+              "apple-corner-frame apple-corner-sm relative size-7 overflow-hidden border bg-surface transition",
               index === activeIndex
                 ? "border-accent ring-2 ring-accent/25"
                 : "border-border hover:border-accent",
