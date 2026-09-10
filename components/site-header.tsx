@@ -1,3 +1,4 @@
+import Image from "next/image";
 import Link from "next/link";
 
 import { AdminEntryButton } from "@/components/admin-entry-button";
@@ -36,9 +37,18 @@ export function SiteHeader({
       <div className="mx-auto flex h-20 w-full max-w-[900px] items-center justify-between px-6 sm:px-10">
         <Link
           href={`/${locale}`}
-          className="text-[15px] font-medium text-foreground"
+          aria-label={profile.name}
+          className="inline-flex shrink-0 items-center"
         >
-          {profile.name}
+          <Image
+            src="/media/logo-meme.webp"
+            alt=""
+            width={128}
+            height={96}
+            unoptimized
+            preload
+            className="apple-corner-frame apple-corner-sm h-12 w-auto"
+          />
         </Link>
 
         <nav
