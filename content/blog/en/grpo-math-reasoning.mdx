@@ -13,12 +13,10 @@ export default function MdxComponent() {
       <h2>TL;DR</h2>
       <p>
         This post documents a 14-experiment journey of post-training Qwen3-0.6B-Base
-        for mathematical reasoning. Starting from SFT (supervised fine-tuning), I
-        discovered that SFT alone cannot substantially improve a small model's reasoning
-        ability. Switching to GRPO (Group Relative Policy Optimization) — the algorithm
-        behind DeepSeek-R1 — unlocked significant gains: accuracy improved from 38.2%
-        to 55.2% (+17pp). The key challenges were reward function design and teaching
-        the model to recognize unsolvable problems.
+        for mathematical reasoning. Under the data and training settings explored here,
+        SFT improved accuracy only modestly, from 38.2% to 39.5%. The final unified
+        pipeline incorporating GRPO achieved 55.2% validation accuracy. The key challenges
+        were reward function design and teaching the model to recognize unsolvable problems.
       </p>
 
       <hr />
@@ -43,15 +41,17 @@ export default function MdxComponent() {
       </p>
 
       <p>
-        <strong>Key insight:</strong> For a small model like Qwen3-0.6B, SFT alone cannot
-        produce meaningful capability gains. However, Base model's pass@5 reached 62.6% —
-        the model <em>has</em> the knowledge, but greedy decoding cannot reliably access it.
-        This gap between greedy and pass@k is exactly what RL can close.
+        Under the data and training settings explored in this project, SFT yielded only a
+        modest improvement on the instructor-provided validation set, from 38.2% to 39.5%.
+        Evaluation used an instructor-provided prompt template containing few-shot examples,
+        which may have reduced the additional benefit of SFT for learning task conventions
+        and output format. This remains a hypothesis rather than an established explanation.
+        The final unified pipeline incorporating GRPO achieved 55.2% validation accuracy.
       </p>
 
       <hr />
 
-      <h2>Phase 2: GRPO Validation — RL &gt;&gt; SFT</h2>
+      <h2>Phase 2: GRPO Validation</h2>
 
       <h3>Why GRPO?</h3>
       <p>
@@ -274,9 +274,11 @@ export default function MdxComponent() {
 
       <ol>
         <li>
-          <strong>SFT has limits:</strong> For small models, SFT alone cannot substantially
-          improve reasoning. The pass@k signal is a better indicator of capability than
-          greedy accuracy.
+          <strong>SFT and GRPO in this project:</strong> SFT provided limited gains in this
+          experimental setting, while the final pipeline incorporating GRPO achieved higher
+          validation accuracy. These results do not establish a general limitation of SFT;
+          its effectiveness may depend on the starting model, training data, prompting, and
+          optimization settings.
         </li>
         <li>
           <strong>RL prerequisite:</strong> RL requires that the model's sampling distribution
